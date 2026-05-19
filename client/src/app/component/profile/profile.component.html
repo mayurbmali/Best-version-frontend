@@ -54,7 +54,7 @@
         <div class="pf-table-row" *ngFor="let user of users; let i = index" [style.animation-delay]="(i * 0.04) + 's'">
           <div class="pf-user-cell">
             <div class="pf-av-sm">{{ getInitials(user.username) }}</div>
-            <span>{{ user.username }}</span>
+            <span style="color: white;">{{ user.username }}</span>
           </div>
           <div class="pf-cell-email">{{ user.email }}</div>
           <div class="pf-cell-contact">{{ user.contactNumber || '—' }}</div>

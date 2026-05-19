@@ -1,8 +1,13 @@
 package com.edutech.service;
 
 import com.edutech.dto.ProfileUpdateRequest;
+import com.edutech.entity.Job;
 import com.edutech.entity.User;
 import com.edutech.exception.ResourceNotFoundException;
+import com.edutech.repository.FreelancerProfileRepository;
+import com.edutech.repository.JobApplicationRepository;
+import com.edutech.repository.JobRepository;
+import com.edutech.repository.ProposalRepository;
 import com.edutech.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +30,10 @@ public class UserService implements UserDetailsService {
 
     @Autowired private UserRepository userRepository;
     @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired private JobRepository jobRepository;
+    @Autowired private ProposalRepository proposalRepository;
+    @Autowired private JobApplicationRepository jobApplicationRepository;
+    @Autowired private FreelancerProfileRepository freelancerProfileRepository;
 
     public User registerUser(User user) {
         if (user.getRole() == null) {
@@ -162,21 +172,42 @@ public class UserService implements UserDetailsService {
         return saved;
     }
 
-    /**
-     * Admin: delete a user by ID.
-     * Cannot delete ADMIN accounts or own account.
-     */
+    @Transactional
     public void deleteUser(Long adminId, Long targetUserId) {
         if (adminId.equals(targetUserId)) {
             throw new com.edutech.exception.ForbiddenActionException("You cannot delete your own account.");
         }
+
         User target = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", targetUserId));
+
         if (target.getRole() == User.Role.ADMIN) {
             throw new com.edutech.exception.ForbiddenActionException("Admin accounts cannot be deleted.");
         }
+
+        if (target.getRole() == User.Role.CLIENT) {
+            // Delete all data owned by this client's jobs before deleting the jobs themselves.
+            // Order matters: proposals and job_applications reference job rows via FK.
+            List<Job> clientJobs = jobRepository.findByClient(target);
+            for (Job job : clientJobs) {
+                proposalRepository.deleteByJobId(job.getId());
+                jobApplicationRepository.deleteByJobId(job.getId());
+            }
+            jobRepository.deleteAll(clientJobs);
+
+        } else if (target.getRole() == User.Role.FREELANCER) {
+            // freelancer_profile.user_id → user.id (no cascade from the User side)
+            freelancerProfileRepository.findByUserId(targetUserId)
+                    .ifPresent(freelancerProfileRepository::delete);
+
+            // job_application.user_id tracks which freelancer applied
+            jobApplicationRepository.deleteByUserId(targetUserId);
+
+            // proposal rows where this user is the freelancer are handled by
+            // CascadeType.ALL on User.proposals, so no manual step needed here.
+        }
+
         userRepository.deleteById(targetUserId);
         log.info("Admin userId={} deleted userId={}, role={}", adminId, targetUserId, target.getRole());
     }
-
 }
