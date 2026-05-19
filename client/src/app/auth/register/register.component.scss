@@ -1,0 +1,137 @@
+.register-card {
+  max-width: 460px;
+}
+
+.form-row-half {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.loading-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.25);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* OTP styles */
+.otp-card { max-width: 420px; }
+.otp-icon { font-size: 48px; text-align: center; margin-bottom: 12px; }
+.otp-input {
+  font-size: 24px;
+  letter-spacing: 8px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+}
+.dev-otp-hint {
+  background: rgba(251,191,36,0.1);
+  border: 1px solid rgba(251,191,36,0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  color: #fbbf24;
+  font-size: 14px;
+  text-align: center;
+}
+.otp-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+.btn-text {
+  background: none;
+  border: none;
+  color: #a78bfa;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  &:hover:not(:disabled) { color: #c4b5fd; text-decoration: underline; }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+.divider-dot { color: rgba(255,255,255,0.3); }
+.alert-custom.success {
+  background: rgba(16,185,129,0.15);
+  border: 1px solid rgba(16,185,129,0.4);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  color: #6ee7b7;
+  font-size: 14px;
+}
+
+/* ── Password strength ── */
+.pw-strength-wrap {
+  display: flex; align-items: center; gap: 10px; margin-top: 6px;
+}
+.pw-strength-bar {
+  flex: 1; height: 4px; background: rgba(255,255,255,0.08); border-radius: 100px; overflow: hidden;
+}
+.pw-strength-fill {
+  height: 100%; border-radius: 100px; transition: width 0.3s ease, background 0.3s ease;
+  &.strength-very-weak  { background: #ef4444; }
+  &.strength-weak       { background: #f97316; }
+  &.strength-fair       { background: #f59e0b; }
+  &.strength-strong     { background: #10b981; }
+  &.strength-very-strong{ background: #06b6d4; }
+}
+.pw-strength-label {
+  font-size: 11px; font-weight: 600; flex-shrink: 0;
+  &.strength-very-weak  { color: #f87171; }
+  &.strength-weak       { color: #fb923c; }
+  &.strength-fair       { color: #fbbf24; }
+  &.strength-strong     { color: #34d399; }
+  &.strength-very-strong{ color: #22d3ee; }
+}
+
+/* ── Password requirements ── */
+.pw-requirements {
+  margin-top: 8px; display: flex; flex-direction: column; gap: 4px;
+}
+.pw-req-item {
+  font-size: 11.5px; color: #f87171; display: flex; align-items: center; gap: 5px;
+  &.pw-req-fail { color: #f87171; }
+}
+
+/* ── Modern Toast ── */
+.nx-toast {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px);
+  z-index: 9999; display: flex; align-items: center; gap: 10px;
+  padding: 12px 18px; border-radius: 12px; min-width: 300px; max-width: 500px;
+  background: rgba(17,24,39,0.96); border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s;
+  opacity: 0; pointer-events: none;
+  &.nx-toast--visible { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+  &.nx-toast--success { border-color: rgba(16,185,129,0.4); }
+  &.nx-toast--error   { border-color: rgba(239,68,68,0.4); }
+  &.nx-toast--warning { border-color: rgba(245,158,11,0.4); }
+  &.nx-toast--info    { border-color: rgba(59,130,246,0.4); }
+}
+.nx-toast-icon { font-size: 16px; flex-shrink: 0; }
+.nx-toast-msg  { font-size: 13.5px; color: #e2e8f0; flex: 1; line-height: 1.4; }
+.nx-toast-close {
+  background: none; border: none; color: rgba(255,255,255,0.35); cursor: pointer;
+  font-size: 13px; padding: 2px 4px; flex-shrink: 0;
+  &:hover { color: rgba(255,255,255,0.7); }
+}

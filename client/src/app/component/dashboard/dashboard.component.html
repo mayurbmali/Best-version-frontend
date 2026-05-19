@@ -1,0 +1,212 @@
+<div class="app-shell">
+
+  <app-sidenav></app-sidenav>
+
+  <main class="nx-main">
+
+    <div class="dash-welcome">
+      <div class="dash-welcome-bg">
+        <div class="dw-orb dw-orb1"></div>
+        <div class="dw-orb dw-orb2"></div>
+        <div class="dw-grid"></div>
+      </div>
+      <div class="dash-welcome-content">
+        <div>
+          <span class="dw-greeting">Good day —<h1 class="dw-name">{{ username }}</h1></span>
+          <p class="dw-sub" *ngIf="roleName === 'ADMIN'">Platform Intelligence Dashboard · Full admin access</p>
+          <p class="dw-sub" *ngIf="roleName === 'CLIENT'">Manage your job postings and review freelancer proposals</p>
+          <p class="dw-sub" *ngIf="roleName === 'FREELANCER'">Browse opportunities and track your proposal pipeline</p>
+        </div>
+        <div class="dw-actions">
+          <button class="nx-btn-primary" *ngIf="roleName === 'CLIENT'" (click)="navigate('/job-create')">+ Post a Job</button>
+          <button class="nx-btn-primary" *ngIf="roleName === 'FREELANCER'" (click)="navigate('/browse-jobs')">Browse Jobs →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN -->
+    <ng-container *ngIf="roleName === 'ADMIN'">
+
+      <div class="admin-tab-bar">
+        <button *ngFor="let tab of adminTabs"
+                class="admin-tab"
+                [class.admin-tab--active]="adminSection === tab.key"
+                (click)="setAdminSection(tab.key)">
+          <span class="admin-tab__icon">{{ tab.icon }}</span>
+          <span>{{ tab.label }}</span>
+        </button>
+        <div class="admin-tab-spacer"></div>
+        <button class="nx-btn-ghost admin-jobs-btn" (click)="navigate('/job-list')">All Jobs →</button>
+      </div>
+
+      <!-- Overview -->
+      <div *ngIf="adminSection === 'overview'" class="admin-section-wrap">
+        <div class="dash-section-header">
+          <h2>Platform Overview</h2>
+          <span class="admin-section-desc">Key metrics across all platform entities</span>
+        </div>
+        <app-admin-overview [overview]="adminOverview"></app-admin-overview>
+
+        <div class="admin-overview-lower">
+          <div class="admin-ov-feed">
+            <div class="dash-section-header" style="padding:0;margin-bottom:14px">
+              <h2>Recent Activity</h2>
+            </div>
+            <app-admin-activity-feed [activities]="adminActivities" [loading]="adminActivitiesLoading"></app-admin-activity-feed>
+          </div>
+          <div class="admin-ov-jobs">
+            <div class="dash-section-header" style="padding:0;margin-bottom:14px">
+              <h2>Recent Jobs</h2>
+              <button class="nx-btn-ghost" (click)="navigate('/job-list')">View All →</button>
+            </div>
+            <div class="admin-job-list">
+              <div class="dash-job-card" *ngFor="let job of recentJobs; let i = index" [style.animation-delay]="(i * 0.06) + 's'">
+                <div class="djc-top">
+                  <div class="djc-badge">💼</div>
+                  <span class="nx-status-chip" [ngClass]="getStatusClass(job.status)">{{ job.status }}</span>
+                </div>
+                <div class="djc-title">{{ job.title }}</div>
+                <div class="djc-desc">{{ job.description }}</div>
+                <div class="djc-footer"><span class="nx-budget-chip">₹{{ job.budget }}</span></div>
+              </div>
+              <div *ngIf="recentJobs.length === 0" class="dash-empty">
+                <div class="de-icon">📋</div><h3>No jobs yet</h3><p>Jobs appear here once posted</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics -->
+      <div *ngIf="adminSection === 'analytics'" class="admin-section-wrap">
+        <div class="dash-section-header">
+          <h2>Platform Analytics</h2>
+          <span class="admin-section-desc">Visual breakdown of platform data</span>
+        </div>
+        <app-admin-analytics [overview]="adminOverview" [jobInsights]="adminJobInsights"></app-admin-analytics>
+      </div>
+
+      <!-- Activity -->
+      <div *ngIf="adminSection === 'activity'" class="admin-section-wrap">
+        <div class="dash-section-header">
+          <h2>Platform Activity</h2>
+          <span class="admin-section-desc">All recent events across users, jobs, and proposals</span>
+        </div>
+        <div class="admin-activity-full">
+          <app-admin-activity-feed [activities]="adminActivities" [loading]="adminActivitiesLoading"></app-admin-activity-feed>
+        </div>
+      </div>
+
+      <!-- Insights -->
+      <div *ngIf="adminSection === 'insights'" class="admin-section-wrap">
+        <div class="dash-section-header">
+          <h2>Platform Insights</h2>
+          <span class="admin-section-desc">Freelancer performance and job engagement metrics</span>
+        </div>
+        <app-admin-insights
+          [freelancers]="adminFreelancers"
+          [jobInsights]="adminJobInsights"
+          [loading]="adminFreelancersLoading || adminJobInsightsLoading">
+        </app-admin-insights>
+      </div>
+
+      <!-- Monitoring -->
+      <div *ngIf="adminSection === 'monitoring'" class="admin-section-wrap">
+        <app-admin-monitoring></app-admin-monitoring>
+      </div>
+
+    </ng-container>
+
+    <!-- CLIENT (unchanged) -->
+    <ng-container *ngIf="roleName === 'CLIENT'">
+      <div class="dash-stat-row">
+        <div class="dash-stat-card dsc-violet">
+          <div class="dsc-icon">📋</div><div class="dsc-label">Total Jobs</div>
+          <div class="dsc-value">{{ stats.totalJobs || 0 }}</div><div class="dsc-desc">Jobs you've posted</div>
+        </div>
+        <div class="dash-stat-card dsc-green">
+          <div class="dsc-icon">✅</div><div class="dsc-label">Open</div>
+          <div class="dsc-value">{{ stats.openJobs || 0 }}</div><div class="dsc-desc">Accepting proposals</div>
+        </div>
+        <div class="dash-stat-card dsc-pink">
+          <div class="dsc-icon">📨</div><div class="dsc-label">Applied</div>
+          <div class="dsc-value">{{ stats.appliedJobs || 0 }}</div><div class="dsc-desc">Freelancers applied</div>
+        </div>
+      </div>
+      <div class="dash-section-header">
+        <h2>My Recent Jobs</h2>
+        <button class="nx-btn-ghost" (click)="navigate('/my-job')">Manage All →</button>
+      </div>
+      <div class="dash-jobs-grid">
+        <div class="dash-job-card" *ngFor="let job of recentJobs; let i = index" [style.animation-delay]="(i * 0.06) + 's'">
+          <div class="djc-top">
+            <div class="djc-badge">📋</div>
+            <span class="nx-status-chip" [ngClass]="getStatusClass(job.status)">{{ job.status }}</span>
+          </div>
+          <div class="djc-title">{{ job.title }}</div>
+          <div class="djc-desc">{{ job.description }}</div>
+          <div class="djc-footer"><span class="nx-budget-chip">₹{{ job.budget }}</span></div>
+        </div>
+        <div class="dash-job-card dash-create-card" (click)="navigate('/job-create')">
+          <div class="dcc-plus">＋</div>
+          <div class="djc-title">Post New Job</div>
+          <div class="djc-desc">Find the perfect freelancer for your project.</div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- FREELANCER (unchanged) -->
+    <ng-container *ngIf="roleName === 'FREELANCER'">
+      <div class="dash-stat-row">
+        <div class="dash-stat-card dsc-cyan">
+          <div class="dsc-icon">🔍</div><div class="dsc-label">Open Jobs</div>
+          <div class="dsc-value">{{ stats.totalJobs || 0 }}</div><div class="dsc-desc">Available to apply</div>
+        </div>
+        <div class="dash-stat-card dsc-violet">
+          <div class="dsc-icon">📝</div><div class="dsc-label">My Proposals</div>
+          <div class="dsc-value">{{ stats.totalProposals || 0 }}</div><div class="dsc-desc">Total submitted</div>
+        </div>
+        <div class="dash-stat-card dsc-green">
+          <div class="dsc-icon">🏆</div><div class="dsc-label">Approved</div>
+          <div class="dsc-value">{{ stats.approvedProposals || 0 }}</div><div class="dsc-desc">Accepted proposals</div>
+        </div>
+      </div>
+      <div class="dash-two-col">
+        <div class="dash-col">
+          <div class="dash-section-header">
+            <h2>Latest Job Listings</h2>
+            <button class="nx-btn-ghost" (click)="navigate('/browse-jobs')">Browse All →</button>
+          </div>
+          <div *ngIf="recentJobs.length === 0" class="dash-empty-inline">No open jobs at the moment.</div>
+          <div class="dash-job-row" *ngFor="let job of recentJobs; let i = index" [style.animation-delay]="(i * 0.06) + 's'">
+            <div class="djr-info">
+              <div class="djr-title">{{ job.title }}</div>
+              <div class="djr-desc">{{ job.description }}</div>
+              <div class="djr-meta">
+                <span class="nx-budget-chip">₹{{ job.budget }}</span>
+                <span class="nx-status-chip" [ngClass]="getStatusClass(job.status)">{{ job.status }}</span>
+              </div>
+            </div>
+            <button class="nx-btn-teal-sm" (click)="navigate('/browse-jobs')">Apply →</button>
+          </div>
+        </div>
+        <div class="dash-col">
+          <div class="dash-section-header">
+            <h2>Recent Proposals</h2>
+            <button class="nx-btn-ghost" (click)="navigate('/my-proposals')">View All →</button>
+          </div>
+          <div *ngIf="recentProposals.length === 0" class="dash-empty-inline">No proposals yet. Start applying!</div>
+          <div class="dash-proposal-card" *ngFor="let p of recentProposals; let i = index" [style.animation-delay]="(i * 0.08) + 's'">
+            <div class="dpc-title">{{ p.job?.title || 'Job' }}</div>
+            <div class="dpc-desc">{{ p.job?.description }}</div>
+            <div class="dpc-footer">
+              <span class="nx-status-chip" [ngClass]="getStatusClass(p.status)">{{ p.status }}</span>
+              <span class="nx-budget-chip">₹{{ p.bidAmount }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+  </main>
+</div>

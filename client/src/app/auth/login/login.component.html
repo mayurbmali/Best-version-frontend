@@ -1,0 +1,130 @@
+<div class="auth-page">
+  <div class="auth-bg-orb orb-1"></div>
+  <div class="auth-bg-orb orb-2"></div>
+  <div class="auth-bg-orb orb-3"></div>
+  <div class="auth-grid-overlay"></div>
+
+  <!-- Modern Toast -->
+  <div class="nx-toast" [class.nx-toast--visible]="toastVisible"
+       [class.nx-toast--error]="toastType==='error'"
+       [class.nx-toast--warning]="toastType==='warning'"
+       [class.nx-toast--success]="toastType==='success'"
+       [class.nx-toast--info]="toastType==='info'">
+    <span class="nx-toast-icon">
+      <span *ngIf="toastType==='success'">✅</span>
+      <span *ngIf="toastType==='error'">❌</span>
+      <span *ngIf="toastType==='warning'">⚠️</span>
+      <span *ngIf="toastType==='info'">ℹ️</span>
+    </span>
+    <span class="nx-toast-msg">{{ toastMessage }}</span>
+    <button class="nx-toast-close" (click)="dismissToast()">✕</button>
+  </div>
+
+  <div class="auth-split">
+    <!-- LEFT PANEL -->
+    <div class="auth-panel-left">
+      <div class="panel-brand">
+        <div class="brand-logo-mark">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span class="brand-name-text">NexLancer</span>
+      </div>
+      <div class="panel-content">
+        <h2>Where talent<br>meets <span class="grad-text">opportunity</span></h2>
+        <p>Connect with world-class freelancers or land your next great project on the platform built for modern work.</p>
+      </div>
+      <div class="panel-visual">
+        <div class="pv-card pv-main">
+          <div class="pv-row"><div class="pv-dot violet"></div><div class="pv-bar w60"></div></div>
+          <div class="pv-stats-row">
+            <div class="pv-stat"><div class="pv-stat-val">$2.4M</div><div class="pv-stat-lbl">Paid Out</div></div>
+            <div class="pv-stat"><div class="pv-stat-val">98%</div><div class="pv-stat-lbl">Satisfaction</div></div>
+            <div class="pv-stat"><div class="pv-stat-val">12K+</div><div class="pv-stat-lbl">Freelancers</div></div>
+          </div>
+        </div>
+        <div class="pv-card pv-chip pvc-1"><div class="pv-chip-dot cyan"></div> New proposal received</div>
+        <div class="pv-card pv-chip pvc-2"><div class="pv-chip-dot violet"></div> Project approved ✓</div>
+      </div>
+      <div class="panel-features">
+        <div class="feature-item">
+          <div class="feature-icon violet">⚡</div>
+          <div class="feature-text"><strong>Fast Matching</strong><span>Find the right fit within hours</span></div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon cyan">🔒</div>
+          <div class="feature-text"><strong>Secure &amp; Trusted</strong><span>Escrow payments, verified profiles</span></div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon pink">📊</div>
+          <div class="feature-text"><strong>Smart Dashboard</strong><span>Real-time insights and analytics</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="auth-panel-right">
+      <div class="auth-card">
+        <div class="auth-card-glow"></div>
+        <div class="auth-header">
+          <div class="auth-logo-wrap">
+            <div class="auth-logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+            <span class="auth-brand-name">NexLancer</span>
+          </div>
+          <h1>Welcome back</h1>
+          <p>Sign in to your account to continue</p>
+        </div>
+
+        <!-- Cooldown Banner -->
+        <div *ngIf="cooldownActive" class="cooldown-banner">
+          🔒 Too many failed attempts. Try again in <strong>{{ cooldownSeconds }}s</strong>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-control"
+              [class.is-invalid]="f['username'].invalid && f['username'].touched"
+              formControlName="username" placeholder="Enter your username" autocomplete="username"/>
+            <div class="invalid-feedback" *ngIf="f['username'].invalid && f['username'].touched">Username is required.</div>
+          </div>
+
+          <div class="form-group">
+            <label>Password</label>
+            <div class="password-wrap">
+              <input [type]="showPassword ? 'text' : 'password'" class="form-control"
+                [class.is-invalid]="f['password'].invalid && f['password'].touched"
+                formControlName="password" placeholder="Enter your password" autocomplete="current-password"/>
+              <button type="button" class="pw-toggle" (click)="showPassword = !showPassword">{{ showPassword ? '🙈' : '👁' }}</button>
+            </div>
+            <div class="invalid-feedback" *ngIf="f['password'].invalid && f['password'].touched">Password is required.</div>
+          </div>
+
+          <!-- Captcha -->
+          <div class="form-group captcha-group">
+            <label>Verification Code</label>
+            <div class="captcha-row">
+              <div class="captcha-display" [class.captcha-blurred]="cooldownActive">{{ captchaText }}</div>
+              <button type="button" class="captcha-refresh-btn" (click)="refreshCaptcha()" [disabled]="cooldownActive" title="Refresh">↻</button>
+            </div>
+            <input type="text" class="form-control" [class.is-invalid]="captchaError"
+              [(ngModel)]="captchaInput" [ngModelOptions]="{standalone: true}"
+              placeholder="Enter the code above" [disabled]="cooldownActive" autocomplete="off"/>
+            <div class="invalid-feedback" *ngIf="captchaError" style="display:block;">{{ captchaError }}</div>
+          </div>
+
+          <div class="forgot-link"><a routerLink="/forgot-password">Forgot password?</a></div>
+
+          <button type="submit" class="btn-primary-custom" [disabled]="loading || cooldownActive">
+            <span *ngIf="!loading && !cooldownActive">Sign In →</span>
+            <span *ngIf="cooldownActive">Wait {{ cooldownSeconds }}s...</span>
+            <span *ngIf="loading && !cooldownActive" class="loading-text"><span class="spinner"></span> Signing in...</span>
+          </button>
+        </form>
+
+        <div class="auth-divider"><span>or</span></div>
+        <div class="google-btn-wrap"><div id="google-signin-btn"></div></div>
+        <div class="auth-link">Don't have an account? <a routerLink="/register">Create one</a></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,99 @@
+<div class="jl-shell">
+
+  <!-- Modern Toast -->
+  <div class="nx-toast" [class.nx-toast--visible]="toastVisible"
+       [class.nx-toast--success]="toastType==='success'" [class.nx-toast--error]="toastType==='error'"
+       [class.nx-toast--warning]="toastType==='warning'" [class.nx-toast--info]="toastType==='info'">
+    <span class="nx-toast-icon">
+      <span *ngIf="toastType==='success'">✅</span><span *ngIf="toastType==='error'">❌</span>
+      <span *ngIf="toastType==='warning'">⚠️</span><span *ngIf="toastType==='info'">ℹ️</span>
+    </span>
+    <span class="nx-toast-msg">{{ toastMessage }}</span>
+    <button class="nx-toast-close" (click)="dismissToast()">✕</button>
+  </div>
+
+  <app-sidenav></app-sidenav>
+
+  <!-- MAIN -->
+  <main class="jl-main">
+
+    <!-- HEADER -->
+    <div class="sub-header-bar">
+      <div>
+        <h1 class="sub-page-title">Unlock <em>Job Posting</em></h1>
+        <p class="sub-page-sub">Subscribe to start connecting with top freelancers.</p>
+      </div>
+      <button class="sub-back-btn" routerLink="/dashboard">← Back to Dashboard</button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="sub-content">
+
+      <!-- PLAN CARD -->
+      <div class="sub-plan-card">
+
+        <div class="sub-badge">⭐ CLIENT PLAN</div>
+
+        <div class="sub-price-row">
+          <span class="sub-price">₹499</span>
+          <span class="sub-price-label">one-time payment</span>
+        </div>
+
+        <div class="sub-divider"></div>
+
+        <ul class="sub-features">
+          <li>
+            <span class="sub-check">✓</span>
+            <span>Post unlimited jobs</span>
+          </li>
+          <li>
+            <span class="sub-check">✓</span>
+            <span>Receive proposals from freelancers</span>
+          </li>
+          <li>
+            <span class="sub-check">✓</span>
+            <span>Manage and track all your projects</span>
+          </li>
+          <li>
+            <span class="sub-check">✓</span>
+            <span>Full platform access — no recurring fees</span>
+          </li>
+        </ul>
+
+        <button class="sub-btn" (click)="subscribe()" [class.sub-btn-loading]="loading">
+          <span *ngIf="!loading">🔐 Subscribe Now — ₹499</span>
+          <span *ngIf="loading">Processing payment...</span>
+        </button>
+
+        <p class="sub-secure">Secured by Razorpay · Test Mode · No recurring charges</p>
+
+      </div>
+
+      <!-- INFO CARDS -->
+      <div class="sub-info-col">
+
+        <div class="sub-info-card">
+          <div class="sub-info-icon">💼</div>
+          <div class="sub-info-title">Post Unlimited Jobs</div>
+          <div class="sub-info-desc">Create as many job listings as you need. Reach thousands of skilled freelancers instantly.</div>
+        </div>
+
+        <div class="sub-info-card">
+          <div class="sub-info-icon">📬</div>
+          <div class="sub-info-title">Receive Proposals</div>
+          <div class="sub-info-desc">Get competitive proposals from verified freelancers with detailed bids and timelines.</div>
+        </div>
+
+        <div class="sub-info-card">
+          <div class="sub-info-icon">🔒</div>
+          <div class="sub-info-title">Secure & One-Time</div>
+          <div class="sub-info-desc">Pay once and get lifetime access. No subscriptions, no hidden fees, no surprises.</div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

@@ -1,0 +1,179 @@
+<div class="bj-shell">
+
+  <!-- Modern Toast -->
+  <div class="nx-toast" [class.nx-toast--visible]="toastVisible"
+       [class.nx-toast--success]="toastType==='success'" [class.nx-toast--error]="toastType==='error'"
+       [class.nx-toast--warning]="toastType==='warning'" [class.nx-toast--info]="toastType==='info'">
+    <span class="nx-toast-icon">
+      <span *ngIf="toastType==='success'">✅</span><span *ngIf="toastType==='error'">❌</span>
+      <span *ngIf="toastType==='warning'">⚠️</span><span *ngIf="toastType==='info'">ℹ️</span>
+    </span>
+    <span class="nx-toast-msg">{{ toastMessage }}</span>
+    <button class="nx-toast-close" (click)="dismissToast()">✕</button>
+  </div>
+
+  <!-- Profile Incomplete Toast -->
+  <div class="bj-toast-overlay" *ngIf="showProfileIncompleteToast">
+    <div class="bj-toast bj-toast-warn">
+      <span class="bj-toast-icon">⚠️</span>
+      <div class="bj-toast-body">
+        <div class="bj-toast-title">Profile Incomplete</div>
+        <div class="bj-toast-msg">{{ profileToastMessage }}</div>
+      </div>
+      <button class="bj-toast-action" (click)="goToProfile()">Go to Profile →</button>
+      <button class="bj-toast-close" (click)="showProfileIncompleteToast = false">✕</button>
+    </div>
+  </div>
+
+  <app-sidenav></app-sidenav>
+
+  <!-- MAIN -->
+  <main class="bj-main">
+
+    <!-- Header -->
+    <div class="bj-header">
+      <div class="bj-header-left">
+        <h1 class="bj-page-title">Browse <span>Jobs</span></h1>
+        <div class="bj-total-badge">{{ allJobs.length }} listings</div>
+      </div>
+      <div class="bj-header-stats" *ngIf="!loading">
+        <div class="bj-hstat">
+          <span class="bj-hstat-val bj-green">{{ getOpenCount() }}</span>
+          <span class="bj-hstat-lbl">Open</span>
+        </div>
+        <div class="bj-hstat-sep"></div>
+        <div class="bj-hstat">
+          <span class="bj-hstat-val bj-blue">{{ getAppliedCount() }}</span>
+          <span class="bj-hstat-lbl">Applied</span>
+        </div>
+        <div class="bj-hstat-sep"></div>
+        <div class="bj-hstat">
+          <span class="bj-hstat-val">{{ allJobs.length }}</span>
+          <span class="bj-hstat-lbl">Total</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="bj-controls">
+      <div class="bj-search-wrap">
+        <span class="bj-search-icon">🔍</span>
+        <input
+          class="bj-search-input"
+          type="text"
+          placeholder="Search jobs by title..."
+          [(ngModel)]="searchTitle"
+          (ngModelChange)="searchJobs()"
+        />
+        <button class="bj-clear-btn" *ngIf="searchTitle" (click)="clearSearch()">✕</button>
+      </div>
+      <div class="bj-filter-row">
+        <button
+          class="bj-filter-chip"
+          *ngFor="let s of statusOptions"
+          [class.bj-chip-active]="filterStatus === s"
+          (click)="setFilter(s)"
+        >{{ s }}</button>
+        <button class="bj-search-btn" (click)="searchJobs()">Search</button>
+      </div>
+    </div>
+
+    <!-- Results count -->
+    <div class="bj-results-line" *ngIf="!loading">
+      Showing <strong>{{ jobs.length }}</strong> of <strong>{{ allJobs.length }}</strong> jobs
+      <span *ngIf="filterStatus !== 'ALL'"> · <em>{{ filterStatus }}</em></span>
+    </div>
+
+    <!-- Spinner -->
+    <div class="bj-spinner-wrap" *ngIf="loading">
+      <div class="bj-spinner"></div>
+      <span>Loading opportunities...</span>
+    </div>
+
+    <!-- Empty state -->
+    <div class="bj-empty" *ngIf="!loading && jobs.length === 0">
+      <div class="bj-empty-icon">🔍</div>
+      <h3>No jobs found</h3>
+      <p *ngIf="searchTitle || filterStatus !== 'ALL'">Try adjusting your search or filters.</p>
+      <p *ngIf="!searchTitle && filterStatus === 'ALL'">No jobs have been posted yet.</p>
+      <button class="bj-btn-ghost" *ngIf="searchTitle || filterStatus !== 'ALL'" (click)="clearSearch()">Clear Filters</button>
+    </div>
+
+    <!-- Jobs Grid -->
+    <div class="bj-grid" *ngIf="!loading && jobs.length > 0">
+      <div
+        class="bj-card"
+        *ngFor="let job of jobs; let i = index"
+        [class.bj-card-applied]="job.status === 'CLOSED'"
+        [style.animation-delay]="(i * 0.045) + 's'"
+      >
+        <div class="bj-card-topline"></div>
+
+        <div class="bj-card-head">
+          <div class="bj-card-icon-wrap">💼</div>
+          <span class="bj-status-pill bj-status-{{(job.status || 'open').toLowerCase()}}">{{ job.status }}</span>
+        </div>
+
+        <h3 class="bj-card-title">{{ job.title }}</h3>
+        <p class="bj-card-desc">{{ job.description }}</p>
+
+        <div class="bj-card-meta">
+          <span class="bj-budget-pill">₹{{ job.budget }}</span>
+          <span class="bj-client-label" *ngIf="job.client?.username">👤 {{ job.client?.username }}</span>
+        </div>
+
+        <div class="bj-card-divider"></div>
+
+        <!-- Bid amount input form (shown when freelancer clicks Apply Now) -->
+        <div class="bj-bid-form" *ngIf="roleName === 'FREELANCER' && bidFormJobId === job.id">
+          <label class="bj-bid-label">Your Bid Amount (₹)</label>
+          <input
+            class="bj-bid-input"
+            type="number"
+            min="1"
+            placeholder="e.g. 4500"
+            [(ngModel)]="bidAmount"
+          />
+          <div class="bj-bid-actions">
+            <button
+              class="bj-apply-btn"
+              [disabled]="isApplying(job.id)"
+              (click)="submitApplication(job)"
+            >
+              <span *ngIf="isApplying(job.id)" class="bj-btn-spinner"></span>
+              <span *ngIf="isApplying(job.id)">Submitting...</span>
+              <span *ngIf="!isApplying(job.id)">Submit Bid</span>
+            </button>
+            <button class="bj-cancel-btn" (click)="cancelBidForm()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Normal footer (when bid form is NOT open) -->
+        <div class="bj-card-foot" *ngIf="bidFormJobId !== job.id">
+          <span class="bj-apply-label">
+            <span *ngIf="job.status === 'CLOSED'">🔒 Closed</span>
+            <span *ngIf="job.status !== 'CLOSED'">Apply Job:</span>
+          </span>
+
+          <!-- FREELANCER apply button -->
+          <button
+            *ngIf="roleName === 'FREELANCER'"
+            class="bj-apply-btn"
+            [disabled]="job.status === 'CLOSED'"
+            (click)="openBidForm(job)"
+          >
+            <span *ngIf="job.status === 'CLOSED'">Closed</span>
+            <span *ngIf="job.status !== 'CLOSED'">Apply</span>
+          </button>
+
+          <!-- Non-freelancer just sees status -->
+          <span *ngIf="roleName !== 'FREELANCER'" class="bj-apply-label">
+            {{ job.status }}
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>

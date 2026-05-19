@@ -1,0 +1,291 @@
+<div class="pf-shell">
+  <app-sidenav></app-sidenav>
+
+  <!-- Modern Toast -->
+  <div class="nx-toast" [class.nx-toast--visible]="toastVisible"
+       [class.nx-toast--success]="toastType==='success'"
+       [class.nx-toast--error]="toastType==='error'"
+       [class.nx-toast--warning]="toastType==='warning'"
+       [class.nx-toast--info]="toastType==='info'">
+    <span class="nx-toast-icon">
+      <span *ngIf="toastType==='success'">✅</span>
+      <span *ngIf="toastType==='error'">❌</span>
+      <span *ngIf="toastType==='warning'">⚠️</span>
+      <span *ngIf="toastType==='info'">ℹ️</span>
+    </span>
+    <span class="nx-toast-msg">{{ toastMessage }}</span>
+    <button class="nx-toast-close" (click)="dismissToast()">✕</button>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="pf-modal-overlay" *ngIf="confirmDeleteUser" (click)="closeDeleteConfirm()">
+    <div class="pf-modal" (click)="$event.stopPropagation()">
+      <div class="pf-modal-icon">⚠️</div>
+      <h3 class="pf-modal-title">Delete User</h3>
+      <p class="pf-modal-msg">
+        Are you sure you want to delete <strong>{{ confirmDeleteUser?.username }}</strong>
+        <span class="pf-modal-role" [ngClass]="getRoleClass(confirmDeleteUser?.role || '')">{{ confirmDeleteUser?.role }}</span>?
+        <br><span class="pf-modal-warn">This action cannot be undone.</span>
+      </p>
+      <div class="pf-modal-actions">
+        <button class="pf-btn-cancel" (click)="closeDeleteConfirm()" [disabled]="deleteLoading">Cancel</button>
+        <button class="pf-btn-delete" (click)="confirmDelete()" [disabled]="deleteLoading">
+          <span *ngIf="!deleteLoading">🗑️ Delete User</span>
+          <span *ngIf="deleteLoading" class="pf-spinner-sm"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main class="pf-main">
+    <div class="pf-spinner-wrap" *ngIf="loading"><div class="pf-spinner"></div></div>
+
+    <!-- ══ ADMIN VIEW ══ -->
+    <ng-container *ngIf="roleName === 'ADMIN' && !loading">
+      <div class="pf-section-header">
+        <h1 class="pf-page-title">User <em>Management</em></h1>
+        <div class="pf-user-count-badge">{{ users.length }} users</div>
+      </div>
+
+      <div class="pf-table-wrap">
+        <div class="pf-table-head">
+          <span>User</span><span>Email</span><span>Contact</span><span>Role</span><span>Actions</span>
+        </div>
+        <div class="pf-table-row" *ngFor="let user of users; let i = index" [style.animation-delay]="(i * 0.04) + 's'">
+          <div class="pf-user-cell">
+            <div class="pf-av-sm">{{ getInitials(user.username) }}</div>
+            <span>{{ user.username }}</span>
+          </div>
+          <div class="pf-cell-email">{{ user.email }}</div>
+          <div class="pf-cell-contact">{{ user.contactNumber || '—' }}</div>
+          <div><span class="pf-role-badge" [ngClass]="getRoleClass(user.role)">{{ user.role }}</span></div>
+          <div class="pf-cell-actions">
+            <button class="pf-btn-delete-row" (click)="openDeleteConfirm(user)" title="Delete user">🗑️</button>
+          </div>
+        </div>
+        <div class="pf-table-empty" *ngIf="users.length === 0">
+          <div class="pf-empty-icon">👥</div><p>No users found</p>
+        </div>
+      </div>
+
+      <!-- Admin's own profile -->
+      <div class="pf-section-header" style="margin-top:40px;">
+        <h2 class="pf-page-title pf-title-sm">My <em>Profile</em></h2>
+        <button class="pf-edit-btn" *ngIf="!isEditing && profile" (click)="enableEdit()">✏️ Edit Profile</button>
+      </div>
+
+      <div class="pf-profile-card" *ngIf="profile && !isEditing">
+        <div class="pf-profile-av">{{ getInitials(profile.username) }}</div>
+        <div class="pf-profile-name">{{ profile.username }}</div>
+        <span class="pf-role-badge" [ngClass]="getRoleClass(profile.role)">{{ profile.role }}</span>
+        <div class="pf-details-grid">
+          <div class="pf-detail-item"><span class="pf-detail-lbl">Email</span><span class="pf-detail-val">{{ profile.email }}</span></div>
+          <div class="pf-detail-item" *ngIf="profile.contactNumber"><span class="pf-detail-lbl">Contact</span><span class="pf-detail-val">{{ profile.contactNumber }}</span></div>
+        </div>
+      </div>
+
+      <div class="pf-profile-card pf-edit-card" *ngIf="profile && isEditing">
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+          <div class="pf-form-group">
+            <label class="pf-form-label">Email <span class="pf-req">*</span></label>
+            <input type="email" formControlName="email" class="pf-form-input" placeholder="Email address"/>
+            <div class="pf-field-error" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+              <span *ngIf="profileForm.get('email')?.errors?.['required']">Email is required.</span>
+              <span *ngIf="profileForm.get('email')?.errors?.['email']">Enter a valid email.</span>
+            </div>
+          </div>
+          <div class="pf-form-group">
+            <label class="pf-form-label">Contact Number</label>
+            <input type="text" formControlName="contactNumber" class="pf-form-input" placeholder="10-digit number"/>
+            <div class="pf-field-error" *ngIf="profileForm.get('contactNumber')?.invalid && profileForm.get('contactNumber')?.touched">Enter a valid 10-digit number.</div>
+          </div>
+          <div class="pf-form-actions">
+            <button type="submit" class="pf-btn-save" [disabled]="profileForm.invalid">💾 Save</button>
+            <button type="button" class="pf-btn-cancel" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </ng-container>
+
+    <!-- ══ CLIENT / FREELANCER VIEW ══ -->
+    <ng-container *ngIf="roleName !== 'ADMIN' && !loading">
+      <div class="pf-section-header">
+        <h1 class="pf-page-title">My <em>Profile</em></h1>
+        <button class="pf-edit-btn" *ngIf="!isEditing && profile" (click)="enableEdit()">✏️ Edit Profile</button>
+      </div>
+
+      <div *ngIf="errorMessage" class="pf-alert pf-alert-error">{{ errorMessage }}</div>
+
+      <!-- Freelancer Progress Bar -->
+      <div class="pf-progress-wrap" *ngIf="roleName === 'FREELANCER'">
+        <div class="pf-progress-card">
+          <div class="pf-progress-header">
+            <div class="pf-progress-left">
+              <div class="pf-progress-icon-wrap">
+                <svg class="pf-progress-icon-svg" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M7 16l4-4 4 4 4-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="pf-progress-label-group">
+                <div class="pf-progress-title">Profile Completion</div>
+                <div class="pf-progress-subtitle">{{ filledFieldsCount }} of {{ completionFields.length }} fields filled</div>
+              </div>
+            </div>
+            <div class="pf-progress-right">
+              <div class="pf-progress-pct" [ngClass]="getProgressColorClass()">{{ completionPercentage }}<span class="pf-pct-sym">%</span></div>
+              <button class="pf-checklist-toggle" (click)="showChecklist = !showChecklist">
+                <svg viewBox="0 0 24 24" fill="none" [style.transform]="showChecklist ? 'rotate(180deg)' : 'rotate(0deg)'">
+                  <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="pf-progress-track-wrap">
+            <div class="pf-progress-track">
+              <div class="pf-progress-fill" [ngClass]="getProgressColorClass()" [style.width.%]="completionPercentage">
+                <span class="pf-progress-shimmer"></span>
+              </div>
+            </div>
+          </div>
+          <div class="pf-progress-hint" [ngClass]="getProgressColorClass()">{{ getCompletionLabel() }}</div>
+          <div class="pf-checklist" [class.pf-checklist-open]="showChecklist">
+            <div class="pf-checklist-inner">
+              <div class="pf-checklist-grid">
+                <div class="pf-cl-item" *ngFor="let field of completionFields" [class.pf-cl-filled]="field.filled" [class.pf-cl-empty]="!field.filled">
+                  <span class="pf-cl-check">
+                    <svg *ngIf="field.filled" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="rgba(16,185,129,0.15)" stroke="rgba(16,185,129,0.5)" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg *ngIf="!field.filled" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="rgba(100,116,139,0.4)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>
+                  </span>
+                  <span class="pf-cl-field-icon">{{ field.icon }}</span>
+                  <span class="pf-cl-label">{{ field.label }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile View -->
+      <div class="pf-layout" *ngIf="profile && !isEditing">
+        <div class="pf-card-avatar-col">
+          <div class="pf-avatar-card">
+            <div class="pf-av-glow"></div>
+            <div class="pf-profile-av-lg">{{ getInitials(profile.username) }}</div>
+            <div class="pf-profile-name">{{ profile.username }}</div>
+            <span class="pf-role-badge" [ngClass]="getRoleClass(profile.role)">{{ profile.role }}</span>
+            <div class="pf-av-meta">
+              <span class="pf-meta-item">📧 {{ profile.email }}</span>
+              <span class="pf-meta-item" *ngIf="profile.contactNumber">📱 {{ profile.contactNumber }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="pf-details-col">
+          <div class="pf-detail-card">
+            <div class="pf-detail-card-title">Account Details</div>
+            <div class="pf-details-list">
+              <div class="pf-detail-row"><div class="pf-dr-icon">👤</div><div class="pf-dr-info"><div class="pf-dr-lbl">Username</div><div class="pf-dr-val">{{ profile.username }}</div></div></div>
+              <div class="pf-detail-row"><div class="pf-dr-icon">📧</div><div class="pf-dr-info"><div class="pf-dr-lbl">Email</div><div class="pf-dr-val">{{ profile.email }}</div></div></div>
+              <div class="pf-detail-row" *ngIf="profile.contactNumber"><div class="pf-dr-icon">📱</div><div class="pf-dr-info"><div class="pf-dr-lbl">Contact</div><div class="pf-dr-val">{{ profile.contactNumber }}</div></div></div>
+              <div class="pf-detail-row" *ngIf="roleName === 'FREELANCER' && profile.skills"><div class="pf-dr-icon">🛠</div><div class="pf-dr-info"><div class="pf-dr-lbl">Skills</div><div class="pf-dr-val">{{ profile.skills }}</div></div></div>
+              <div class="pf-detail-row" *ngIf="profile.bio"><div class="pf-dr-icon">📄</div><div class="pf-dr-info"><div class="pf-dr-lbl">Bio</div><div class="pf-dr-val">{{ profile.bio }}</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Mode -->
+      <div class="pf-edit-form-card" *ngIf="profile && isEditing">
+        <div class="pf-edit-header">
+          <div class="pf-profile-av-sm">{{ getInitials(profile.username) }}</div>
+          <div><div class="pf-profile-name">{{ profile.username }}</div><span class="pf-role-badge" [ngClass]="getRoleClass(profile.role)">{{ profile.role }}</span></div>
+        </div>
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+          <div class="pf-form-two-col">
+            <div class="pf-form-group">
+              <label class="pf-form-label">Email <span class="pf-req">*</span></label>
+              <input type="email" formControlName="email" class="pf-form-input" placeholder="Email address"/>
+              <div class="pf-field-error" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+                <span *ngIf="profileForm.get('email')?.errors?.['required']">Email is required.</span>
+                <span *ngIf="profileForm.get('email')?.errors?.['email']">Enter a valid email.</span>
+              </div>
+            </div>
+            <div class="pf-form-group">
+              <label class="pf-form-label">Contact Number</label>
+              <input type="text" formControlName="contactNumber" class="pf-form-input" placeholder="10-digit number"/>
+              <div class="pf-field-error" *ngIf="profileForm.get('contactNumber')?.invalid && profileForm.get('contactNumber')?.touched">Enter a valid 10-digit number.</div>
+            </div>
+          </div>
+          <div class="pf-form-group" *ngIf="roleName === 'CLIENT' || roleName === 'FREELANCER'">
+            <label class="pf-form-label">Bio</label>
+            <textarea formControlName="bio" class="pf-form-input pf-textarea" rows="4" placeholder="Tell us about yourself..."></textarea>
+            <div class="pf-field-error" *ngIf="profileForm.get('bio')?.errors?.['maxlength']">Bio must be under 500 characters.</div>
+          </div>
+          <div class="pf-form-group" *ngIf="roleName === 'FREELANCER'">
+            <label class="pf-form-label">Skills</label>
+            <input type="text" formControlName="skills" class="pf-form-input" placeholder="e.g. Angular, Java, Python"/>
+            <div class="pf-field-error" *ngIf="profileForm.get('skills')?.errors?.['maxlength']">Skills must be under 300 characters.</div>
+          </div>
+          <div class="pf-form-actions">
+            <button type="submit" class="pf-btn-save" [disabled]="profileForm.invalid">💾 Save Changes</button>
+            <button type="button" class="pf-btn-cancel" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Professional Profile (FREELANCER only) -->
+      <ng-container *ngIf="roleName === 'FREELANCER'">
+        <div class="pf-section-header" style="margin-top:32px;">
+          <h2 class="pf-page-title pf-title-sm">Professional <em>Details</em></h2>
+          <button class="pf-edit-btn" *ngIf="!isProfEditing" (click)="enableProfEdit()">✏️ Edit</button>
+        </div>
+
+        <div class="pf-detail-card pf-prof-card" *ngIf="!isProfEditing">
+          <div *ngIf="!freelancerProfile" class="pf-prof-empty">
+            <span>⚠️</span><span>Professional details not yet added. Complete this to apply for jobs.</span>
+          </div>
+          <div class="pf-details-list" *ngIf="freelancerProfile">
+            <div class="pf-detail-row" *ngIf="freelancerProfile.experienceYears != null"><div class="pf-dr-icon">🏅</div><div class="pf-dr-info"><div class="pf-dr-lbl">Experience</div><div class="pf-dr-val">{{ freelancerProfile.experienceYears }} year{{ freelancerProfile.experienceYears !== 1 ? 's' : '' }}</div></div></div>
+            <div class="pf-detail-row" *ngIf="freelancerProfile.highestEducation"><div class="pf-dr-icon">🎓</div><div class="pf-dr-info"><div class="pf-dr-lbl">Education</div><div class="pf-dr-val">{{ freelancerProfile.highestEducation }}</div></div></div>
+            <div class="pf-detail-row" *ngIf="freelancerProfile.linkedinUrl"><div class="pf-dr-icon">🔗</div><div class="pf-dr-info"><div class="pf-dr-lbl">LinkedIn</div><div class="pf-dr-val"><a [href]="freelancerProfile.linkedinUrl" target="_blank" rel="noopener">{{ freelancerProfile.linkedinUrl }}</a></div></div></div>
+            <div class="pf-detail-row" *ngIf="freelancerProfile.githubUrl"><div class="pf-dr-icon">💻</div><div class="pf-dr-info"><div class="pf-dr-lbl">GitHub</div><div class="pf-dr-val"><a [href]="freelancerProfile.githubUrl" target="_blank" rel="noopener">{{ freelancerProfile.githubUrl }}</a></div></div></div>
+            <div class="pf-prof-empty" *ngIf="!freelancerProfile.experienceYears && !freelancerProfile.highestEducation && !freelancerProfile.linkedinUrl && !freelancerProfile.githubUrl"><span>No professional details added yet.</span></div>
+          </div>
+        </div>
+
+        <div class="pf-edit-form-card" *ngIf="isProfEditing">
+          <form [formGroup]="profForm" (ngSubmit)="saveProfProfile()">
+            <div class="pf-form-two-col">
+              <div class="pf-form-group">
+                <label class="pf-form-label">Experience (Years)</label>
+                <input type="number" formControlName="experienceYears" class="pf-form-input" placeholder="e.g. 3" min="0" max="60"/>
+                <div class="pf-field-error" *ngIf="profForm.get('experienceYears')?.invalid && profForm.get('experienceYears')?.touched">Enter a value between 0 and 60.</div>
+              </div>
+              <div class="pf-form-group">
+                <label class="pf-form-label">Highest Education</label>
+                <input type="text" formControlName="highestEducation" class="pf-form-input" placeholder="e.g. B.Tech Computer Science"/>
+                <div class="pf-field-error" *ngIf="profForm.get('highestEducation')?.errors?.['maxlength']">Max 200 characters.</div>
+              </div>
+            </div>
+            <div class="pf-form-two-col">
+              <div class="pf-form-group">
+                <label class="pf-form-label">LinkedIn URL</label>
+                <input type="url" formControlName="linkedinUrl" class="pf-form-input" placeholder="https://linkedin.com/in/username"/>
+                <div class="pf-field-error" *ngIf="profForm.get('linkedinUrl')?.errors?.['maxlength']">Max 300 characters.</div>
+              </div>
+              <div class="pf-form-group">
+                <label class="pf-form-label">GitHub URL</label>
+                <input type="url" formControlName="githubUrl" class="pf-form-input" placeholder="https://github.com/username"/>
+                <div class="pf-field-error" *ngIf="profForm.get('githubUrl')?.errors?.['maxlength']">Max 300 characters.</div>
+              </div>
+            </div>
+            <div class="pf-form-actions">
+              <button type="submit" class="pf-btn-save">💾 Save Professional Details</button>
+              <button type="button" class="pf-btn-cancel" (click)="cancelProfEdit()">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </ng-container>
+    </ng-container>
+  </main>
+</div>

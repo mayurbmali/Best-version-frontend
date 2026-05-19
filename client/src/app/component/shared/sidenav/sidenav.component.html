@@ -1,0 +1,86 @@
+<aside class="nx-sidebar">
+
+  <!-- Brand -->
+  <div class="nx-sidebar-brand">
+    <div class="nx-brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    </div>
+    <div class="nx-brand-text">
+      <span class="nx-brand-name">NexLancer</span>
+      <span class="nx-brand-role">{{ roleName }}</span>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nx-nav">
+
+    <!-- ADMIN -->
+    <ng-container *ngIf="roleName === 'ADMIN'">
+      <span class="nx-nav-section">Platform</span>
+      <a routerLink="/dashboard" routerLinkActive="nx-active" [routerLinkActiveOptions]="{exact:true}">
+        <span class="nx-nav-icon">⬡</span><span>Dashboard</span>
+      </a>
+      <a routerLink="/job-list" routerLinkActive="nx-active">
+        <span class="nx-nav-icon">💼</span><span>All Jobs</span>
+      </a>
+      <a routerLink="/reports" routerLinkActive="nx-active">
+        <span class="nx-nav-icon">📊</span><span>Reports</span>
+      </a>
+      <span class="nx-nav-section">Admin Tools</span>
+      <a routerLink="/users" routerLinkActive="nx-active">
+        <span class="nx-nav-icon">👥</span><span>Users</span>
+      </a>
+    </ng-container>
+
+    <!-- CLIENT -->
+    <ng-container *ngIf="roleName === 'CLIENT'">
+      <span class="nx-nav-section">Workspace</span>
+      <a routerLink="/dashboard" routerLinkActive="nx-active" [routerLinkActiveOptions]="{exact:true}">
+        <span class="nx-nav-icon">⬡</span><span>Dashboard</span>
+      </a>
+      <a routerLink="/job-list" routerLinkActive="nx-active">
+        <span class="nx-nav-icon">🔍</span><span>Browse Jobs</span>
+      </a>
+      <a routerLink="/job-create" routerLinkActive="nx-active">
+        <span class="nx-nav-icon">＋</span><span>Post a Job</span>
+      </a>
+      <a routerLink="/my-job" routerLinkActive="nx-active">
+        <span class="nx-nav-icon">📋</span><span>My Jobs</span>
+      </a>
+      <a routerLink="/my-profile" routerLinkActive="nx-active">
+        <span class="nx-nav-icon">👤</span><span>Profile</span>
+      </a>
+    </ng-container>
+
+    <!-- FREELANCER -->
+    <ng-container *ngIf="roleName === 'FREELANCER'">
+      <span class="nx-nav-section">Workspace</span>
+      <a routerLink="/dashboard" routerLinkActive="nx-active" [routerLinkActiveOptions]="{exact:true}">
+        <span class="nx-nav-icon">⬡</span><span>Dashboard</span>
+      </a>
+      <a routerLink="/browse-jobs" routerLinkActive="nx-active">
+        <span class="nx-nav-icon">🔍</span><span>Browse Jobs</span>
+      </a>
+      <a routerLink="/my-proposals" routerLinkActive="nx-active">
+        <span class="nx-nav-icon">📝</span><span>My Proposals</span>
+      </a>
+      <a routerLink="/my-profile" routerLinkActive="nx-active">
+        <span class="nx-nav-icon">👤</span><span>Profile</span>
+      </a>
+    </ng-container>
+
+  </nav>
+
+  <!-- Footer: user chip + sign out -->
+  <div class="nx-sidebar-foot">
+    <div class="nx-user-chip">
+      <div class="nx-user-av">{{ avatarLetter }}</div>
+      <div class="nx-user-info">
+        <span class="nx-user-name">{{ username }}</span>
+        <span class="nx-user-role">{{ roleName }}</span>
+      </div>
+    </div>
+    <button class="nx-logout-btn" (click)="logout()"><span>↩</span> Sign out</button>
+  </div>
+
+</aside>

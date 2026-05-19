@@ -1,0 +1,145 @@
+<div class="ai-wrap">
+  <div class="ai-two-col">
+
+    <!-- ── Freelancer Leaderboard ─────────────────────────────────────────── -->
+    <div class="ai-panel">
+      <div class="ai-panel__header">
+        <span class="ai-panel__icon">🏆</span>
+        <div>
+          <div class="ai-panel__title">Top Freelancers</div>
+          <div class="ai-panel__sub">Ranked by approved proposals</div>
+        </div>
+      </div>
+
+      <!-- Skeleton -->
+      <div *ngIf="loading">
+        <div class="ai-skeleton-row" *ngFor="let i of [1,2,3,4,5]"></div>
+      </div>
+
+      <!-- Empty -->
+      <div class="ai-empty" *ngIf="!loading && topFreelancers.length === 0">
+        <span>💻</span><p>No freelancers registered yet</p>
+      </div>
+
+      <!-- Table -->
+      <div class="ai-table-wrap" *ngIf="!loading && topFreelancers.length > 0">
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Freelancer</th>
+              <th>Proposals</th>
+              <th>Hired</th>
+              <th>Rate</th>
+              <th>Profile</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let f of topFreelancers; let i = index"
+                class="ai-table__row"
+                [style.animation-delay]="(i * 0.05) + 's'">
+              <td>
+                <span class="ai-rank" [class.ai-rank--top]="i < 3">{{ i + 1 }}</span>
+              </td>
+              <td>
+                <div class="ai-user-cell">
+                  <div class="ai-avatar">{{ getInitial(f.username) }}</div>
+                  <div>
+                    <div class="ai-user-name">{{ f.username }}</div>
+                    <div class="ai-user-email">{{ f.email }}</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="ai-num">{{ f.totalProposals }}</span></td>
+              <td><span class="ai-num ai-num--green">{{ f.approvedProposals }}</span></td>
+              <td>
+                <div class="ai-rate-wrap">
+                  <div class="ai-rate-bar">
+                    <div class="ai-rate-fill" [style.width.%]="hireRate(f)"></div>
+                  </div>
+                  <span class="ai-rate-val">{{ hireRate(f) }}%</span>
+                </div>
+              </td>
+              <td>
+                <span class="ai-profile-badge" [class.ai-profile-badge--ok]="f.profileComplete">
+                  {{ f.profileComplete ? '✓ Done' : '⚠ Incomplete' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Right column: Job Insights + Incomplete Profiles ──────────────── -->
+    <div class="ai-right-col">
+
+      <!-- Job Insights -->
+      <div class="ai-panel ai-panel--compact" *ngIf="jobInsights">
+        <div class="ai-panel__header">
+          <span class="ai-panel__icon">💼</span>
+          <div>
+            <div class="ai-panel__title">Job Insights</div>
+            <div class="ai-panel__sub">Current engagement metrics</div>
+          </div>
+        </div>
+
+        <div class="ai-job-metrics">
+          <div class="ai-jm-row">
+            <div class="ai-jm-item" *ngFor="let item of [
+              {label:'Total Jobs',    val: jobInsights.totalJobs,            color:'#c084fc'},
+              {label:'Open',          val: jobInsights.openJobs,             color:'#34d399'},
+              {label:'Applied',       val: jobInsights.appliedJobs,          color:'#60a5fa'},
+              {label:'Closed',        val: jobInsights.closedJobs,           color:'#f87171'},
+              {label:'No Proposals',  val: jobInsights.jobsWithoutProposals, color:'#fb923c'},
+              {label:'Avg Proposals', val: jobInsights.avgProposalsPerJob,   color:'#fbbf24'}
+            ]">
+              <div class="ai-jm-val" [style.color]="item.color">{{ item.val }}</div>
+              <div class="ai-jm-label">{{ item.label }}</div>
+            </div>
+          </div>
+
+          <div class="ai-engagement-bars">
+            <div class="ai-panel__sub" style="margin-bottom:10px">Job Status Distribution</div>
+            <div class="ai-eng-row" *ngFor="let row of [
+              {label:'Open',     key:'openJobs',    color:'#34d399'},
+              {label:'Applied',  key:'appliedJobs', color:'#60a5fa'},
+              {label:'Closed',   key:'closedJobs',  color:'#f87171'}
+            ]">
+              <span class="ai-eng-label">{{ row.label }}</span>
+              <div class="ai-eng-track">
+                <div class="ai-eng-fill"
+                     [style.width.%]="jobEngagementPct(row.key)"
+                     [style.background]="row.color"></div>
+              </div>
+              <span class="ai-eng-val">{{ jobInsights[row.key] || 0 }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Incomplete Profiles Alert -->
+      <div class="ai-panel ai-panel--alert" *ngIf="!loading && incompleteProfiles.length > 0">
+        <div class="ai-panel__header">
+          <span class="ai-panel__icon ai-panel__icon--warn">⚠️</span>
+          <div>
+            <div class="ai-panel__title">Incomplete Profiles</div>
+            <div class="ai-panel__sub">{{ incompleteProfiles.length }} freelancer(s) missing info</div>
+          </div>
+        </div>
+
+        <div class="ai-incomplete-list">
+          <div class="ai-incomplete-row" *ngFor="let f of incompleteProfiles">
+            <div class="ai-avatar ai-avatar--sm">{{ getInitial(f.username) }}</div>
+            <div class="ai-incomplete-info">
+              <div class="ai-incomplete-name">{{ f.username }}</div>
+              <div class="ai-incomplete-email">{{ f.email }}</div>
+            </div>
+            <span class="ai-warn-chip">Incomplete</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

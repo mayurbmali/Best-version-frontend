@@ -1,0 +1,75 @@
+<div class="app-layout">
+
+  <app-sidenav></app-sidenav>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="page-title">Platform <span>Reports</span></div>
+    </div>
+
+    <div *ngIf="loading" class="spinner"></div>
+
+    <ng-container *ngIf="!loading && userReport">
+      <!-- Stat Cards -->
+      <div class="grid-2" style="margin-bottom:28px;">
+        <div class="stat-card">
+          <div class="stat-label">Total Clients</div>
+          <div class="stat-value">{{ userReport.totalClients || 0 }}</div>
+          <div class="stat-desc">Registered employers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Freelancers</div>
+          <div class="stat-value">{{ userReport.totalFreelancers || 0 }}</div>
+          <div class="stat-desc">Active talent</div>
+        </div>
+      </div>
+
+      <!-- User Report Summary Banner -->
+      <div class="report-banner">
+        <span class="report-banner-icon">📊</span>
+        <span>User Report — Platform Overview</span>
+      </div>
+
+      <div class="grid-2" style="margin-top:20px;">
+        <!-- Clients List -->
+        <div class="report-section">
+          <div class="report-title">🏢 Clients</div>
+          <div *ngIf="!userReport.clients || userReport.clients.length === 0"
+               style="color:var(--text-muted);font-size:13px;padding:12px 0;">
+            No clients registered yet.
+          </div>
+          <div class="user-row" *ngFor="let c of userReport.clients">
+            <div>
+              <div class="user-name">{{ c.username }}</div>
+              <div class="user-email">{{ c.email }}</div>
+            </div>
+            <span class="job-badge status-open">CLIENT</span>
+          </div>
+        </div>
+
+        <!-- Freelancers List -->
+        <div class="report-section">
+          <div class="report-title">👨‍💻 Freelancers</div>
+          <div *ngIf="!userReport.freelancers || userReport.freelancers.length === 0"
+               style="color:var(--text-muted);font-size:13px;padding:12px 0;">
+            No freelancers registered yet.
+          </div>
+          <div class="user-row" *ngFor="let f of userReport.freelancers">
+            <div>
+              <div class="user-name">{{ f.username }}</div>
+              <div class="user-email">{{ f.email }}</div>
+              <div class="user-skills" *ngIf="f.skills">🛠 {{ f.skills }}</div>
+            </div>
+            <span class="job-badge status-pending">FREELANCER</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div *ngIf="!loading && !userReport" class="empty-state">
+      <div class="empty-icon">📊</div>
+      <h3>No report data available</h3>
+      <p>Data will appear once users are registered.</p>
+    </div>
+  </main>
+</div>

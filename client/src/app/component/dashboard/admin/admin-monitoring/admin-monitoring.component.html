@@ -1,0 +1,98 @@
+<div class="am-wrap">
+
+  <div class="am-section-header">
+    <span class="am-section-icon">🖥️</span>
+    <div>
+      <div class="am-section-title">Platform Health Monitor</div>
+      <div class="am-section-sub">JVM metrics · refreshes every 30s</div>
+    </div>
+    <button class="am-refresh-btn" (click)="fetchHealth()" [class.am-spinning]="loading">↺ Refresh</button>
+  </div>
+
+  <!-- Error state -->
+  <div class="am-error" *ngIf="error && !loading">
+    <span>⚠️</span>
+    <p>Unable to reach monitoring endpoint. Ensure the backend is running.</p>
+    <button class="am-retry-btn" (click)="fetchHealth()">Retry</button>
+  </div>
+
+  <!-- Loading -->
+  <div class="am-skeleton-grid" *ngIf="loading">
+    <div class="am-skeleton" *ngFor="let i of [1,2,3,4,5,6]"></div>
+  </div>
+
+  <!-- Health cards -->
+  <div class="am-grid" *ngIf="!loading && health">
+
+    <!-- Overall Status -->
+    <div class="am-card am-card--hero"
+         [style.border-color]="statusBorder"
+         [style.background]="'linear-gradient(145deg,' + statusBg + ', rgba(11,16,32,0.9))'">
+      <div class="am-card__label">System Status</div>
+      <div class="am-card__status-row">
+        <div class="am-status-dot" [style.background]="statusColor"></div>
+        <div class="am-card__value" [style.color]="statusColor">{{ health.status }}</div>
+      </div>
+      <div class="am-card__desc">All platform services</div>
+    </div>
+
+    <!-- DB Status -->
+    <div class="am-card">
+      <div class="am-card__label">Database</div>
+      <div class="am-card__value" [style.color]="dbStatusColor">{{ health.dbStatus }}</div>
+      <div class="am-card__desc">MySQL connection</div>
+      <div class="am-card__indicator" [style.background]="dbStatusColor"></div>
+    </div>
+
+    <!-- Uptime -->
+    <div class="am-card am-card--cyan">
+      <div class="am-card__icon">⏱</div>
+      <div class="am-card__label">Uptime</div>
+      <div class="am-card__value am-card__value--lg">{{ health.uptimeFormatted }}</div>
+      <div class="am-card__desc">Since last restart</div>
+    </div>
+
+    <!-- Heap Memory -->
+    <div class="am-card am-card--wide">
+      <div class="am-card__header-row">
+        <div>
+          <div class="am-card__label">Heap Memory</div>
+          <div class="am-card__value am-card__value--sm">
+            {{ health.heapUsedMB }} MB / {{ health.heapMaxMB }} MB
+          </div>
+        </div>
+        <div class="am-pct-badge" [style.color]="heapColor" [style.border-color]="heapColor + '44'">
+          {{ heapPct }}%
+        </div>
+      </div>
+      <div class="am-mem-track">
+        <div class="am-mem-fill"
+             [style.width.%]="heapPct"
+             [style.background]="heapColor">
+        </div>
+      </div>
+      <div class="am-mem-legend">
+        <span>Used: {{ health.heapUsedMB }} MB</span>
+        <span>Free: {{ health.freeMemoryMB }} MB</span>
+        <span>Total: {{ health.totalMemoryMB }} MB</span>
+      </div>
+    </div>
+
+    <!-- Java version -->
+    <div class="am-card am-card--violet">
+      <div class="am-card__icon">☕</div>
+      <div class="am-card__label">Java Version</div>
+      <div class="am-card__value am-card__value--sm">{{ health.javaVersion }}</div>
+      <div class="am-card__desc">Runtime environment</div>
+    </div>
+
+    <!-- Spring version -->
+    <div class="am-card am-card--teal">
+      <div class="am-card__icon">🌿</div>
+      <div class="am-card__label">Spring Boot</div>
+      <div class="am-card__value am-card__value--sm">{{ health.springVersion }}</div>
+      <div class="am-card__desc">Framework version</div>
+    </div>
+
+  </div>
+</div>

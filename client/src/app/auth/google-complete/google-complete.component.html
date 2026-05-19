@@ -1,0 +1,109 @@
+<div class="auth-page">
+  <div class="auth-bg-orb orb-1"></div>
+  <div class="auth-bg-orb orb-2"></div>
+  <div class="auth-bg-orb orb-3"></div>
+  <div class="auth-grid-overlay"></div>
+
+  <div class="auth-split">
+    <!-- LEFT PANEL -->
+    <div class="auth-panel-left">
+      <div class="panel-brand">
+        <div class="brand-logo-mark">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span class="brand-name-text">NexLancer</span>
+      </div>
+      <div class="panel-content">
+        <h2>Almost<br><span class="grad-text">there!</span></h2>
+        <p>Just one more step to complete your NexLancer account setup via Google.</p>
+      </div>
+      <div class="panel-features">
+        <div class="feature-item">
+          <div class="feature-icon violet">🔒</div>
+          <div class="feature-text">
+            <strong>Google Verified</strong>
+            <span>Your email is already verified</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon cyan">🚀</div>
+          <div class="feature-text">
+            <strong>Instant Access</strong>
+            <span>Start using NexLancer right away</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="auth-panel-right">
+      <div class="auth-card">
+        <div class="auth-card-glow"></div>
+        <div class="auth-header">
+          <div class="google-verified-badge">
+            <div class="google-icon">G</div>
+            <span class="verified-check">✓</span>
+          </div>
+          <h1>Complete Registration</h1>
+          <p>Signed in as <strong>{{ pendingEmail }}</strong></p>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert-custom error">⚠ {{ errorMessage }}</div>
+
+        <form [formGroup]="completeForm" (ngSubmit)="onSubmit()" novalidate>
+
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-control"
+              [class.is-invalid]="f['username'].invalid && f['username'].touched"
+              formControlName="username"
+              placeholder="Choose a username" />
+            <div class="invalid-feedback" *ngIf="f['username'].errors?.['required'] && f['username'].touched">Username is required.</div>
+            <div class="invalid-feedback" *ngIf="f['username'].errors?.['minlength'] && f['username'].touched">Minimum 3 characters.</div>
+            <div class="invalid-feedback" *ngIf="f['username'].errors?.['pattern'] && f['username'].touched">Letters, numbers and underscores only.</div>
+          </div>
+
+          <div class="form-group">
+            <label>I want to join as</label>
+            <div class="role-selector">
+
+              <div class="role-option"
+                [class.selected]="selectedRole === 'FREELANCER'"
+                (click)="selectRole('FREELANCER')">
+                <div class="role-card">
+                  <div class="role-icon">💼</div>
+                  <div class="role-title">Freelancer</div>
+                  <div class="role-desc">Find work &amp; earn</div>
+                </div>
+              </div>
+
+              <div class="role-option"
+                [class.selected]="selectedRole === 'CLIENT'"
+                (click)="selectRole('CLIENT')">
+                <div class="role-card">
+                  <div class="role-icon">🏢</div>
+                  <div class="role-title">Client</div>
+                  <div class="role-desc">Post jobs &amp; hire</div>
+                </div>
+              </div>
+
+            </div>
+            <div class="role-error" *ngIf="roleError">Please select a role to continue.</div>
+          </div>
+
+          <button type="submit" class="btn-primary-custom" [disabled]="loading">
+            <span *ngIf="!loading">Join NexLancer →</span>
+            <span *ngIf="loading" class="loading-text">
+              <span class="spinner"></span> Creating account...
+            </span>
+          </button>
+
+        </form>
+
+        <div class="auth-link">
+          <button type="button" class="btn-text" (click)="cancelGoogle()">← Use a different account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

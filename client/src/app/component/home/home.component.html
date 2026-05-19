@@ -1,0 +1,576 @@
+<div class="home-page" #homePage>
+
+  <!-- CURSOR SPOTLIGHT -->
+  <div class="cursor-spotlight" #cursorSpotlight></div>
+
+  <!-- PARTICLE CANVAS -->
+  <canvas class="particle-canvas" #particleCanvas></canvas>
+
+  <!-- NAVBAR -->
+  <nav class="home-nav" [class.scrolled]="isScrolled">
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <div class="nav-logo-mark">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span class="nav-brand-name">NexLancer</span>
+      </div>
+
+      <div class="nav-links">
+        <a href="#features" class="nav-link-item">Features</a>
+        <a href="#story" class="nav-link-item">How it works</a>
+        <a href="#testimonials" class="nav-link-item">Reviews</a>
+        <a href="#subscription" class="nav-link-item">Pricing</a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-nav-ghost" (click)="goToLogin()">Sign In</button>
+        <button class="btn-nav-cta" (click)="goToRegister()">
+          Get Started <span class="arrow">→</span>
+        </button>
+      </div>
+
+      <button class="nav-hamburger" (click)="toggleMobileMenu()" [class.open]="mobileMenuOpen" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE OVERLAY -->
+  <div class="mobile-overlay" [class.open]="mobileMenuOpen">
+    <div class="mobile-overlay-inner">
+      <button class="mobile-close" (click)="closeMobileMenu()">✕</button>
+      <div class="mobile-brand">
+        <div class="nav-logo-mark small">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span>NexLancer</span>
+      </div>
+      <div class="mobile-links">
+        <a href="#features" (click)="closeMobileMenu()">Features</a>
+        <a href="#story" (click)="closeMobileMenu()">How it works</a>
+        <a href="#testimonials" (click)="closeMobileMenu()">Reviews</a>
+        <a href="#subscription" (click)="closeMobileMenu()">Pricing</a>
+      </div>
+      <div class="mobile-actions">
+        <button class="btn-nav-ghost full" (click)="goToLogin(); closeMobileMenu()">Sign In</button>
+        <button class="btn-nav-cta full" (click)="goToRegister(); closeMobileMenu()">Get Started →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== HERO =================== -->
+  <section class="hero">
+    <div class="hero-scene">
+      <div class="aurora-layer a1"></div>
+      <div class="aurora-layer a2"></div>
+      <div class="aurora-layer a3"></div>
+      <div class="aurora-layer a4"></div>
+      <div class="hero-ellipse-glow"></div>
+      <div class="hero-grid-lines"></div>
+      <div class="hero-noise"></div>
+      <div class="hero-vignette"></div>
+    </div>
+
+    <div class="hero-content">
+
+      <!-- Floating glass card -->
+      <div class="glass-card hero-item" style="--hi-delay:0.05s">
+        <div class="glass-tag">[ AI Powered ]</div>
+        <div class="glass-title">Smart Talent<br><em>Matching Engine</em></div>
+        <div class="glass-desc">Connects clients with the perfect freelancer in seconds using intelligent role and skills analysis.</div>
+      </div>
+
+      <!-- Eyebrow -->
+      <div class="hero-eyebrow hero-item" style="--hi-delay:0.12s">
+        <span class="eyebrow-pulse"></span>
+        Premium Freelance Platform
+      </div>
+
+      <h1 class="hero-headline hero-item" style="--hi-delay:0.22s">
+        THE FUTURE OF<br>
+        FREELANCE <span class="hero-grad">COLLABORATION<span class="green-dot">.</span></span>
+      </h1>
+
+      <p class="hero-sub hero-item" style="--hi-delay:0.34s">
+        Where visionary clients and world-class freelancers<br class="br-desk">
+        build extraordinary things together.
+      </p>
+
+      <div class="hero-cta hero-item" style="--hi-delay:0.44s">
+        <button class="btn-primary-hero" (click)="goToRegister()">
+          <span class="btn-glow-layer"></span>
+          Get Started Free
+          <span class="btn-arrow">→</span>
+        </button>
+        <button class="btn-secondary-hero" (click)="goToLogin()">Sign In</button>
+      </div>
+
+      <div class="hero-trust hero-item" style="--hi-delay:0.52s">
+        <div class="trust-avatars">
+          <div class="trust-av" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">A</div>
+          <div class="trust-av" style="background:linear-gradient(135deg,#06b6d4,#7c3aed)">R</div>
+          <div class="trust-av" style="background:linear-gradient(135deg,#a855f7,#f472b6)">P</div>
+          <div class="trust-av" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">S</div>
+          <div class="trust-av" style="background:linear-gradient(135deg,#f472b6,#a855f7)">K</div>
+        </div>
+        <span class="trust-text">Trusted by <strong>12,000+</strong> professionals</span>
+        <div class="trust-sep"></div>
+        <div class="trust-stars">★★★★★ <span class="trust-num">4.9</span></div>
+      </div>
+
+    </div>
+
+    <!-- Stats strip -->
+    <div class="hero-stats hero-item" style="--hi-delay:0.60s">
+      <div class="hstat" *ngFor="let s of stats; let last = last">
+        <div class="hstat-val">{{ s.value }}</div>
+        <div class="hstat-label">{{ s.label }}</div>
+        <div class="hstat-div" *ngIf="!last"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== FEATURES =================== -->
+  <section class="features-section" id="features">
+    <div class="section-wrap">
+      <div class="section-eyebrow reveal">Platform Features</div>
+      <h2 class="section-headline reveal">
+        Everything you need to<br><span class="grad-text">do great work</span>
+      </h2>
+      <p class="section-sub reveal">A complete professional toolkit designed to remove friction at every step of collaboration.</p>
+
+      <div class="bento-grid">
+
+        <div class="bento-card b-large reveal">
+          <div class="bc-tag violet">⚡ Matching</div>
+          <h3>Instant Matching</h3>
+          <p>AI-powered project-to-freelancer matching in seconds.</p>
+          <div class="bc-visual bv-match">
+            <div class="match-orb"></div>
+            <div class="match-ring r1"></div>
+            <div class="match-ring r2"></div>
+            <div class="match-ping"></div>
+            <div class="match-label ml1">Dev ✓</div>
+            <div class="match-label ml2">Designer ✓</div>
+          </div>
+        </div>
+
+        <div class="bento-card b-sm reveal">
+          <div class="bc-tag cyan">🔐 Security</div>
+          <h3>Secure Payments</h3>
+          <p>Escrow-backed transactions and safe milestone releases.</p>
+          <div class="bc-visual bv-pay">
+            <div class="pay-shield">🔒</div>
+            <div class="pay-amount">₹5,000</div>
+            <div class="pay-status">Protected</div>
+          </div>
+        </div>
+
+        <div class="bento-card b-sm reveal">
+          <div class="bc-tag pink">📈 Analytics</div>
+          <h3>Live Analytics</h3>
+          <p>Track project status, proposals, and performance in real time.</p>
+          <div class="bc-visual bv-chart">
+            <div class="chart-bar cb1"></div>
+            <div class="chart-bar cb2"></div>
+            <div class="chart-bar cb3"></div>
+            <div class="chart-bar cb4"></div>
+            <div class="chart-bar cb5"></div>
+            <div class="chart-line"></div>
+          </div>
+        </div>
+
+        <div class="bento-card b-wide reveal">
+          <div class="bc-tag blue">🌐 Global</div>
+          <h3>Global Talent Network</h3>
+          <p>Access a curated pool of freelancers across design, development, marketing, and more.</p>
+          <div class="bc-visual bv-globe">
+            <div class="globe-dot gd1"></div>
+            <div class="globe-dot gd2"></div>
+            <div class="globe-dot gd3"></div>
+            <div class="globe-dot gd4"></div>
+            <div class="globe-dot gd5"></div>
+            <div class="globe-line gl1"></div>
+            <div class="globe-line gl2"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== LOGO / TRUST BAND =================== -->
+  <section class="logo-band">
+    <div class="logo-band-inner">
+      <div class="logo-band-label">Trusted by professionals at</div>
+      <div class="logo-band-track">
+        <div class="logo-item">Razorpay</div>
+        <div class="logo-sep"></div>
+        <div class="logo-item">Zoho</div>
+        <div class="logo-sep"></div>
+        <div class="logo-item">Infosys</div>
+        <div class="logo-sep"></div>
+        <div class="logo-item">Freshworks</div>
+        <div class="logo-sep"></div>
+        <div class="logo-item">Swiggy</div>
+        <div class="logo-sep"></div>
+        <div class="logo-item">Meesho</div>
+        <div class="logo-sep"></div>
+        <div class="logo-item">CRED</div>
+        <div class="logo-sep"></div>
+        <div class="logo-item">PhonePe</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== STORY =================== -->
+  <section class="story-section" id="story">
+    <div class="story-glow"></div>
+    <div class="section-wrap">
+      <div class="section-eyebrow reveal">How it works</div>
+      <h2 class="section-headline reveal">Your journey from <span class="grad-text">idea to launch</span></h2>
+
+      <div class="story-track">
+        <div class="story-step reveal" *ngFor="let s of storySteps; let i = index; let odd = odd">
+          <div class="story-num">{{ s.num }}</div>
+          <div class="story-connector" *ngIf="i < storySteps.length - 1"></div>
+          <div class="story-body" [class.right]="odd">
+            <h3>{{ s.title }}</h3>
+            <p>{{ s.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== DASHBOARD SHOWCASE =================== -->
+  <section class="showcase-section">
+    <div class="showcase-glow sg1"></div>
+    <div class="showcase-glow sg2"></div>
+    <div class="section-wrap">
+      <div class="section-eyebrow reveal">Product Preview</div>
+      <h2 class="section-headline reveal">Your entire workflow,<br><span class="grad-text">in one dashboard</span></h2>
+      <p class="section-sub reveal">Real-time tracking, smart proposals, and instant insights — all in one beautifully unified workspace.</p>
+    </div>
+
+    <div class="showcase-frame reveal">
+
+      <!-- Main dashboard panel -->
+      <div class="dash-main">
+        <div class="dash-topbar">
+          <div class="dash-topbar-left">
+            <div class="dash-dot dd-red"></div>
+            <div class="dash-dot dd-yellow"></div>
+            <div class="dash-dot dd-green"></div>
+            <span class="dash-title-label">NexLancer Dashboard</span>
+          </div>
+          <div class="dash-topbar-right">
+            <div class="dash-pill active-pill">
+              <span class="ap-dot"></span>Live
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-body">
+          <!-- Sidebar -->
+          <div class="dash-sidebar">
+            <div class="dsb-item dsb-active">
+              <span class="dsb-icon">⬡</span>
+              <span class="dsb-label">Dashboard</span>
+            </div>
+            <div class="dsb-item">
+              <span class="dsb-icon">◈</span>
+              <span class="dsb-label">Projects</span>
+            </div>
+            <div class="dsb-item">
+              <span class="dsb-icon">◎</span>
+              <span class="dsb-label">Proposals</span>
+            </div>
+            <div class="dsb-item">
+              <span class="dsb-icon">◇</span>
+              <span class="dsb-label">Payments</span>
+            </div>
+            <div class="dsb-item">
+              <span class="dsb-icon">◉</span>
+              <span class="dsb-label">Analytics</span>
+            </div>
+          </div>
+
+          <!-- Main content area -->
+          <div class="dash-content">
+            <!-- Metric row -->
+            <div class="dash-metrics">
+              <div class="dm-card">
+                <div class="dm-label">Active Projects</div>
+                <div class="dm-val">7</div>
+                <div class="dm-trend up">↑ 12%</div>
+              </div>
+              <div class="dm-card">
+                <div class="dm-label">Proposals Sent</div>
+                <div class="dm-val">24</div>
+                <div class="dm-trend up">↑ 8%</div>
+              </div>
+              <div class="dm-card">
+                <div class="dm-label">Earnings</div>
+                <div class="dm-val">₹84K</div>
+                <div class="dm-trend up">↑ 23%</div>
+              </div>
+              <div class="dm-card">
+                <div class="dm-label">Rating</div>
+                <div class="dm-val">4.9</div>
+                <div class="dm-trend neutral">★★★★★</div>
+              </div>
+            </div>
+
+            <!-- Activity + mini chart row -->
+            <div class="dash-lower">
+              <div class="dash-activity">
+                <div class="da-title">Recent Activity</div>
+                <div class="da-item">
+                  <div class="da-av" style="background:linear-gradient(135deg,#7c3aed,#06b6d4)">A</div>
+                  <div class="da-info">
+                    <div class="da-name">Arjun accepted your proposal</div>
+                    <div class="da-time">2 min ago</div>
+                  </div>
+                  <div class="da-badge accepted">Accepted</div>
+                </div>
+                <div class="da-item">
+                  <div class="da-av" style="background:linear-gradient(135deg,#a855f7,#f472b6)">M</div>
+                  <div class="da-info">
+                    <div class="da-name">Milestone payment released</div>
+                    <div class="da-time">1 hr ago</div>
+                  </div>
+                  <div class="da-badge paid">₹12K</div>
+                </div>
+                <div class="da-item">
+                  <div class="da-av" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">K</div>
+                  <div class="da-info">
+                    <div class="da-name">New job match found for you</div>
+                    <div class="da-time">3 hr ago</div>
+                  </div>
+                  <div class="da-badge new">New</div>
+                </div>
+              </div>
+
+              <div class="dash-chart-panel">
+                <div class="dcp-title">Earnings Overview</div>
+                <div class="dcp-chart">
+                  <div class="dcp-bar" style="height:35%"></div>
+                  <div class="dcp-bar" style="height:55%"></div>
+                  <div class="dcp-bar" style="height:42%"></div>
+                  <div class="dcp-bar" style="height:70%"></div>
+                  <div class="dcp-bar active" style="height:88%"></div>
+                  <div class="dcp-bar" style="height:65%"></div>
+                </div>
+                <div class="dcp-labels">
+                  <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating mini-cards -->
+      <div class="float-card fc-match">
+        <div class="fc-icon">⚡</div>
+        <div class="fc-info">
+          <div class="fc-title">Match Found</div>
+          <div class="fc-sub">Senior React Dev · 98% fit</div>
+        </div>
+      </div>
+
+      <div class="float-card fc-pay">
+        <div class="fc-pay-icon">🔒</div>
+        <div class="fc-info">
+          <div class="fc-title">Payment Secured</div>
+          <div class="fc-amount">₹ 18,500</div>
+        </div>
+      </div>
+
+      <div class="float-card fc-status">
+        <div class="fc-status-dot"></div>
+        <div class="fc-info">
+          <div class="fc-title">Project Live</div>
+          <div class="fc-sub">On time · 3 days left</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =================== TRUST =================== -->
+  <section class="trust-section">
+    <div class="section-wrap">
+      <div class="section-eyebrow reveal">By the numbers</div>
+      <h2 class="section-headline reveal">Built on <span class="grad-text">real results</span></h2>
+
+      <div class="trust-grid">
+        <div class="trust-card reveal" *ngFor="let s of stats">
+          <div class="tc-val">{{ s.value }}</div>
+          <div class="tc-label">{{ s.label }}</div>
+          <div class="tc-bar"></div>
+        </div>
+      </div>
+
+      <div class="trust-avatars-row reveal">
+        <div class="tar-label">Trusted by professionals worldwide</div>
+        <div class="tar-avs">
+          <div class="tar-av" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">A</div>
+          <div class="tar-av" style="background:linear-gradient(135deg,#06b6d4,#7c3aed)">R</div>
+          <div class="tar-av" style="background:linear-gradient(135deg,#a855f7,#f472b6)">M</div>
+          <div class="tar-av" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">S</div>
+          <div class="tar-av" style="background:linear-gradient(135deg,#f472b6,#a855f7)">K</div>
+          <div class="tar-av more">+12K</div>
+        </div>
+        <div class="tar-stars">★★★★★ <span>98% satisfaction</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== TESTIMONIALS =================== -->
+  <section class="testimonials-section" id="testimonials">
+    <div class="section-wrap">
+      <div class="section-eyebrow reveal">Testimonials</div>
+      <h2 class="section-headline reveal">Loved by <span class="grad-text">ambitious teams</span></h2>
+
+      <div class="testimonials-track">
+        <div class="tcard reveal" *ngFor="let t of testimonials">
+          <div class="tcard-stars">★★★★★</div>
+          <p class="tcard-quote">"{{ t.quote }}"</p>
+          <div class="tcard-author">
+            <div class="tcard-av" [style.background]="t.grad">{{ t.initials }}</div>
+            <div>
+              <div class="tcard-name">{{ t.author }}</div>
+              <div class="tcard-role">{{ t.role }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SUBSCRIPTION =================== -->
+  <section class="sub-section" id="subscription">
+    <div class="sub-aurora sa1"></div>
+    <div class="sub-aurora sa2"></div>
+    <div class="section-wrap">
+      <div class="sub-box reveal">
+        <div class="sub-noise"></div>
+        <div class="sub-top-line"></div>
+
+        <div class="sub-header">
+          <div class="sub-badge">
+            <span class="sub-crown">♛</span>
+            Client Only
+          </div>
+          <div class="sub-monthly-tag">Monthly</div>
+        </div>
+
+        <h2 class="sub-title">Client Subscription Plan</h2>
+        <p class="sub-subtitle">Unlock premium access to verified freelancers, advanced matching, priority support, and secure collaboration tools.</p>
+
+        <div class="sub-price">
+          <span class="sub-currency">₹</span>
+          <span class="sub-amount">5,000</span>
+          <span class="sub-period">/ month</span>
+        </div>
+
+        <div class="sub-benefits">
+          <div class="sub-benefit" *ngFor="let b of subscriptionBenefits">
+            <span class="sub-check">✓</span>
+            <span>{{ b }}</span>
+          </div>
+        </div>
+
+        <button class="btn-sub-cta" (click)="goToLogin()">
+          <span class="sub-btn-glow"></span>
+          Continue to Login
+          <span class="sub-btn-arrow">→</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== FINAL CTA =================== -->
+  <section class="final-cta-section">
+    <div class="final-cta-glow fcg1"></div>
+    <div class="final-cta-glow fcg2"></div>
+    <div class="section-wrap">
+      <div class="final-cta-box reveal">
+        <div class="final-cta-top-line"></div>
+        <div class="final-cta-noise"></div>
+        <div class="section-eyebrow" style="margin-bottom:28px">Join NexLancer Today</div>
+        <h2 class="final-cta-headline">
+          Ready to build something<br><span class="grad-text">extraordinary?</span>
+        </h2>
+        <p class="final-cta-sub">
+          Join 12,000+ professionals already using NexLancer to find work, hire talent, and ship faster than ever before.
+        </p>
+        <div class="final-cta-actions">
+          <button class="btn-primary-hero" (click)="goToRegister()">
+            <span class="btn-glow-layer"></span>
+            Create Free Account
+            <span class="btn-arrow">→</span>
+          </button>
+          <button class="btn-nav-ghost" (click)="goToLogin()" style="padding:17px 32px;font-size:15px;border-radius:14px;">
+            Sign In
+          </button>
+        </div>
+        <div class="final-cta-note">No credit card required · Free to get started</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== FOOTER =================== -->
+  <footer class="home-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand-col">
+          <div class="footer-logo">
+            <div class="footer-logo-mark">
+              <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <span>NexLancer</span>
+          </div>
+          <p class="footer-tagline">The modern platform where ambitious clients and world-class freelancers build extraordinary things.</p>
+          <div class="footer-socials">
+            <a class="fsoc" href="#">𝕏</a>
+            <a class="fsoc" href="#">in</a>
+            <a class="fsoc" href="#">gh</a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <div class="flinks-col">
+            <h4>Platform</h4>
+            <a href="#">Browse Jobs</a>
+            <a href="#">Post a Job</a>
+            <a href="#">My Proposals</a>
+            <a href="#">Dashboard</a>
+          </div>
+          <div class="flinks-col">
+            <h4>Company</h4>
+            <a href="#">About</a>
+            <a href="#">Blog</a>
+            <a href="#">Careers</a>
+            <a href="#">Contact</a>
+          </div>
+          <div class="flinks-col">
+            <h4>Legal</h4>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Security</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2025 NexLancer Inc. All rights reserved.</span>
+        <span class="footer-made">Crafted for ambitious professionals</span>
+      </div>
+    </div>
+  </footer>
+
+</div>

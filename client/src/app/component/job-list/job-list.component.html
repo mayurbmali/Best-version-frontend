@@ -1,0 +1,94 @@
+<div class="jl-shell">
+
+  <app-sidenav></app-sidenav>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="jl-main">
+
+    <!-- Header -->
+    <div class="jl-header">
+      <div>
+        <h1 class="jl-page-title">
+          <span *ngIf="roleName === 'ADMIN'">All <em>Jobs</em></span>
+          <span *ngIf="roleName !== 'ADMIN'">Browse <em>Jobs</em></span>
+        </h1>
+        <p class="jl-page-sub" *ngIf="!loading">{{ jobs.length }} job{{ jobs.length !== 1 ? 's' : '' }} available</p>
+      </div>
+      <div class="jl-header-actions">
+        <button class="jl-btn-primary" *ngIf="roleName === 'CLIENT'" routerLink="/job-create">
+          + Post Job
+        </button>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="jl-search-bar">
+      <div class="jl-search-wrap">
+        <span class="jl-search-icon">🔍</span>
+        <input
+          class="jl-search-input"
+          type="text"
+          [(ngModel)]="searchTitle"
+          placeholder="Search jobs by title..."
+          (keyup.enter)="searchJobs()"
+          (input)="searchJobs()"
+        />
+      </div>
+      <button class="jl-search-btn" (click)="searchJobs()">Search</button>
+    </div>
+
+    <!-- Loading -->
+    <div class="jl-spinner-wrap" *ngIf="loading">
+      <div class="jl-spinner"></div>
+    </div>
+
+    <!-- Empty -->
+    <div class="jl-empty" *ngIf="!loading && jobs.length === 0">
+      <div class="jl-empty-icon">💼</div>
+      <h3>No Jobs Found</h3>
+      <p>{{ searchTitle ? 'Try a different search term.' : 'No jobs have been posted yet.' }}</p>
+    </div>
+
+    <!-- Jobs Table -->
+    <div class="jl-table-wrap" *ngIf="!loading && jobs.length > 0">
+      <div class="jl-table-head">
+        <span>Job</span>
+        <span>Budget</span>
+        <span>Status</span>
+        <!-- <span *ngIf="roleName === 'CLIENT'" >Actions</span> -->
+      </div>
+
+      <div class="jl-job-row" *ngFor="let job of jobs; let i = index" [style.animation-delay]="(i * 0.04) + 's'">
+        <div class="jl-job-info">
+          <div class="jl-job-badge">💼</div>
+          <div class="jl-job-details">
+            <div class="jl-job-title">{{ job.title }}</div>
+            <div class="jl-job-desc">{{ job.description }}</div>
+          </div>
+        </div>
+        <div class="jl-job-budget">₹{{ job.budget }}</div>
+        <div>
+          <span class="jl-status-chip jl-status-{{ (job.status || 'open').toLowerCase() }}">{{ job.status }}</span>
+        </div>
+        <div class="jl-job-actions">
+          <button
+            class="jl-btn-apply"
+            *ngIf="roleName === 'FREELANCER'"
+            (click)="applyJob(job.id)"
+            [disabled]="job.status === 'APPLIED'"
+          >
+            {{ job.status === 'APPLIED' ? '✓ Applied' : 'Apply' }}
+          </button>
+          <!-- <button
+            class="jl-btn-delete"
+            *ngIf="roleName === 'CLIENT'"
+            (click)="deleteJob(job.id)"
+          >
+            🗑
+          </button> -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>

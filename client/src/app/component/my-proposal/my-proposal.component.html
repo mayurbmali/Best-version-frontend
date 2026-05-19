@@ -1,0 +1,97 @@
+<div class="mp-shell">
+  <app-sidenav></app-sidenav>
+
+  <!-- Toast -->
+  <div class="nx-toast" [class.nx-toast--visible]="toastVisible"
+       [class.nx-toast--success]="toastType==='success'" [class.nx-toast--error]="toastType==='error'"
+       [class.nx-toast--warning]="toastType==='warning'" [class.nx-toast--info]="toastType==='info'">
+    <span class="nx-toast-icon">
+      <span *ngIf="toastType==='success'">✅</span><span *ngIf="toastType==='error'">❌</span>
+      <span *ngIf="toastType==='warning'">⚠️</span><span *ngIf="toastType==='info'">ℹ️</span>
+    </span>
+    <span class="nx-toast-msg">{{ toastMessage }}</span>
+    <button class="nx-toast-close" (click)="dismissToast()">✕</button>
+  </div>
+
+  <main class="mp-main">
+
+    <!-- Header -->
+    <div class="mp-header">
+      <div class="mp-header-left">
+        <h1 class="mp-page-title">My <em>Proposals</em></h1>
+        <p class="mp-page-sub">Track all your job applications in one place</p>
+      </div>
+      <button class="mp-browse-btn" routerLink="/browse-jobs">Browse Jobs →</button>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="mp-stats-row" *ngIf="!loading && proposals.length > 0">
+      <div class="mp-stat-card mp-stat-violet">
+        <div class="mp-sc-icon">📝</div>
+        <div class="mp-sc-val">{{ totalCount }}</div>
+        <div class="mp-sc-lbl">Total</div>
+      </div>
+      <div class="mp-stat-card mp-stat-amber">
+        <div class="mp-sc-icon">⏳</div>
+        <div class="mp-sc-val">{{ pendingCount }}</div>
+        <div class="mp-sc-lbl">Pending</div>
+      </div>
+      <div class="mp-stat-card mp-stat-green">
+        <div class="mp-sc-icon">✅</div>
+        <div class="mp-sc-val">{{ acceptedCount }}</div>
+        <div class="mp-sc-lbl">Accepted</div>
+      </div>
+      <div class="mp-stat-card mp-stat-red">
+        <div class="mp-sc-icon">❌</div>
+        <div class="mp-sc-val">{{ rejectedCount }}</div>
+        <div class="mp-sc-lbl">Rejected</div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="mp-spinner-wrap" *ngIf="loading"><div class="mp-spinner"></div></div>
+
+    <!-- Empty -->
+    <div class="mp-empty" *ngIf="!loading && proposals.length === 0">
+      <div class="mp-empty-icon">📝</div>
+      <h3>No proposals yet</h3>
+      <p>Start applying to jobs to track your proposals here.</p>
+      <button class="mp-browse-btn" routerLink="/browse-jobs" style="margin-top:20px;">Browse Jobs →</button>
+    </div>
+
+    <!-- Proposal Grid -->
+    <div class="mp-grid" *ngIf="!loading && proposals.length > 0">
+      <div class="mp-card" *ngFor="let p of proposals; let i = index"
+           [style.animation-delay]="(i * 0.05) + 's'">
+        <!-- Top accent line -->
+        <div class="mp-card-top-accent" [ngClass]="getAccentClass(p.status)"></div>
+
+        <!-- Header row -->
+        <div class="mp-card-header">
+          <div class="mp-card-icon-wrap">
+            <span class="mp-card-emoji">📋</span>
+          </div>
+          <span class="mp-status-pill" [ngClass]="getStatusClass(p.status)">
+            {{ getStatusIcon(p.status) }} {{ p.status || 'PENDING' }}
+          </span>
+        </div>
+
+        <!-- Job title -->
+        <div class="mp-card-title">{{ p.job?.title || 'Job Listing' }}</div>
+        <div class="mp-card-desc">{{ p.job?.description }}</div>
+
+        <!-- Footer -->
+        <div class="mp-card-footer">
+          <div class="mp-bid-tag">
+            <span class="mp-bid-icon">₹</span>
+            <span class="mp-bid-val">{{ p.bidAmount | number:'1.0-0' }}</span>
+          </div>
+          <div class="mp-date-tag" *ngIf="p.appliedAt">
+            📅 {{ p.appliedAt | date:'MMM d, y' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>

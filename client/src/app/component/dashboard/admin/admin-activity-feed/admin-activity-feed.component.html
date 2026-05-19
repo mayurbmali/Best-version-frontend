@@ -1,0 +1,55 @@
+<div class="af-card">
+  <div class="af-header">
+    <div class="af-header__left">
+      <span class="af-header__icon">⚡</span>
+      <div>
+        <div class="af-header__title">Platform Activity</div>
+        <div class="af-header__sub">Recent events across the platform</div>
+      </div>
+    </div>
+    <div class="af-live-badge">
+      <span class="af-live-dot"></span>Live
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="af-skeleton-wrap" *ngIf="loading">
+    <div class="af-skeleton-row" *ngFor="let i of [1,2,3,4,5,6]"></div>
+  </div>
+
+  <!-- Empty -->
+  <div class="af-empty" *ngIf="!loading && activities.length === 0">
+    <div class="af-empty__icon">📭</div>
+    <p>No activity recorded yet</p>
+  </div>
+
+  <!-- Feed list -->
+  <div class="af-list" *ngIf="!loading && activities.length > 0">
+    <div class="af-item"
+         *ngFor="let event of activities; let i = index"
+         [style.animation-delay]="(i * 0.04) + 's'">
+
+      <!-- Avatar -->
+      <div class="af-avatar af-avatar--{{ getConfig(event.type).color }}">
+        {{ getInitial(event.actorName) }}
+      </div>
+
+      <!-- Connector line -->
+      <div class="af-line"></div>
+
+      <!-- Content -->
+      <div class="af-content">
+        <div class="af-content__row">
+          <span class="af-content__desc">{{ event.description }}</span>
+          <span class="af-badge af-badge--{{ getConfig(event.type).color }}">
+            {{ getConfig(event.type).icon }} {{ getConfig(event.type).label }}
+          </span>
+        </div>
+        <div class="af-content__meta" *ngIf="event.timestamp">
+          <span class="af-time-icon">🕐</span>
+          {{ event.timestamp | slice:0:10 }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,315 @@
+<div class="mj-shell">
+
+  <!-- Modern Toast -->
+  <div class="nx-toast" [class.nx-toast--visible]="toastVisible"
+       [class.nx-toast--success]="toastType==='success'" [class.nx-toast--error]="toastType==='error'"
+       [class.nx-toast--warning]="toastType==='warning'" [class.nx-toast--info]="toastType==='info'">
+    <span class="nx-toast-icon">
+      <span *ngIf="toastType==='success'">✅</span><span *ngIf="toastType==='error'">❌</span>
+      <span *ngIf="toastType==='warning'">⚠️</span><span *ngIf="toastType==='info'">ℹ️</span>
+    </span>
+    <span class="nx-toast-msg">{{ toastMessage }}</span>
+    <button class="nx-toast-close" (click)="dismissToast()">✕</button>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="mj-modal-overlay" *ngIf="confirmDeleteJobId" (click)="closeDeleteConfirm()">
+    <div class="mj-modal" (click)="$event.stopPropagation()">
+      <div class="mj-modal-icon">🗑️</div>
+      <h3 class="mj-modal-title">Delete Job</h3>
+      <p class="mj-modal-msg">Are you sure you want to delete this job? All proposals will be removed. <span class="mj-modal-warn">This cannot be undone.</span></p>
+      <div class="mj-modal-actions">
+        <button class="mj-btn-cancel" (click)="closeDeleteConfirm()">Cancel</button>
+        <button class="mj-btn-delete" (click)="deleteJob(confirmDeleteJobId)">🗑️ Delete</button>
+      </div>
+    </div>
+  </div>
+
+
+  <app-sidenav></app-sidenav>
+
+  <!-- ══════════════ MAIN ══════════════ -->
+  <main class="mj-main">
+
+    <!-- Header -->
+    <div class="mj-header">
+      <div class="mj-header-left">
+        <h1 class="mj-page-title">My <em>Jobs</em></h1>
+        <p class="mj-page-sub" *ngIf="!loading">
+          {{ jobs.length }} job{{ jobs.length !== 1 ? 's' : '' }} posted
+        </p>
+      </div>
+      <button class="mj-btn-primary" routerLink="/job-create">+ Post New Job</button>
+    </div>
+
+    <!-- Stats row -->
+    <div class="mj-stats-row" *ngIf="!loading && jobs.length > 0">
+      <div class="mj-stat-card mj-sc-violet">
+        <span class="mj-stat-icon">📋</span>
+        <div class="mj-stat-val">{{ jobs.length }}</div>
+        <div class="mj-stat-lbl">Total Jobs</div>
+      </div>
+      <div class="mj-stat-card mj-sc-blue">
+        <span class="mj-stat-icon">👥</span>
+        <div class="mj-stat-val">{{ getTotalApplicants() }}</div>
+        <div class="mj-stat-lbl">Applicants</div>
+      </div>
+      <div class="mj-stat-card mj-sc-green">
+        <span class="mj-stat-icon">💰</span>
+        <div class="mj-stat-val">₹{{ getTotalBudget() | number }}</div>
+        <div class="mj-stat-lbl">Total Budget</div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="mj-spinner-wrap" *ngIf="loading">
+      <div class="mj-spinner"></div>
+      <span>Loading your jobs...</span>
+    </div>
+
+    <!-- Empty -->
+    <div class="mj-empty" *ngIf="!loading && jobs.length === 0">
+      <div class="mj-empty-icon">📋</div>
+      <h3>No jobs posted yet</h3>
+      <p>Post your first job to start receiving proposals from talented freelancers.</p>
+      <button class="mj-btn-primary" routerLink="/job-create" style="margin-top:20px;">Post a Job</button>
+    </div>
+
+    <!-- ══════════════ JOB CARDS ══════════════ -->
+    <div class="mj-jobs-list" *ngIf="!loading && jobs.length > 0">
+
+      <div class="mj-job-card"
+           *ngFor="let job of jobs; let i = index"
+           [style.animation-delay]="(i * 0.06) + 's'"
+           [class.mj-card-expanded]="isApplicantsExpanded(job.id)">
+
+        <div class="mj-card-topline"></div>
+
+        <!-- ── Job Summary Header ── -->
+        <div class="mj-card-summary">
+
+          <div class="mj-card-head">
+            <div class="mj-card-icon">📋</div>
+
+            <!-- View mode -->
+            <div class="mj-card-info" *ngIf="editingJobId !== job.id">
+              <div class="mj-card-title">{{ job.title }}</div>
+              <div class="mj-card-desc">{{ job.description }}</div>
+            </div>
+
+            <!-- Edit mode -->
+            <div class="mj-card-info mj-edit-mode" *ngIf="editingJobId === job.id">
+              <div class="mj-edit-field">
+                <label class="mj-edit-label">Job Title</label>
+                <input class="mj-edit-input" type="text" [(ngModel)]="editForm.title" placeholder="Job title"/>
+              </div>
+              <div class="mj-edit-field">
+                <label class="mj-edit-label">Description</label>
+                <textarea class="mj-edit-textarea" [(ngModel)]="editForm.description" placeholder="Job description"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chips row -->
+          <div class="mj-card-chips" *ngIf="editingJobId !== job.id">
+            <span class="mj-budget-chip">₹{{ job.budget }}</span>
+            <span class="mj-status-chip mj-status-{{ (job.status || 'open').toLowerCase() }}">{{ job.status }}</span>
+            <span class="mj-applicant-chip" (click)="toggleApplicants(job.id)" *ngIf="!isLoadingProposals(job.id)">
+              <span class="mj-chip-dot"></span>
+              {{ getProposals(job.id).length }} Applicant{{ getProposals(job.id).length !== 1 ? 's' : '' }}
+              <span class="mj-chip-arrow" [class.mj-chip-arrow-up]="isApplicantsExpanded(job.id)">›</span>
+            </span>
+          </div>
+
+          <!-- Budget edit row -->
+          <div class="mj-card-chips mj-edit-budget-row" *ngIf="editingJobId === job.id">
+            <div class="mj-edit-field">
+              <label class="mj-edit-label">Budget</label>
+              <input class="mj-edit-input mj-budget-input" type="number" [(ngModel)]="editForm.budget" placeholder="Budget"/>
+            </div>
+          </div>
+
+          <!-- Action footer -->
+          <div class="mj-card-footer">
+            <span class="mj-action-hint" *ngIf="editingJobId !== job.id">
+              <span *ngIf="job.status === 'OPEN'">⬤ Open — waiting for applicants</span>
+              <span *ngIf="job.status === 'APPLIED'">⬤ Freelancers applied — review below</span>
+              <span *ngIf="job.status === 'CLOSED'">✓ Closed — proposal accepted</span>
+            </span>
+            <span class="mj-action-hint" *ngIf="editingJobId === job.id">Edit details then save</span>
+
+            <div class="mj-action-btns">
+              <button class="mj-btn-edit"
+                      *ngIf="editingJobId !== job.id && job.status !== 'CLOSED'"
+                      (click)="startEdit(job)">✎ Edit</button>
+              <button class="mj-btn-accept"
+                      *ngIf="editingJobId === job.id"
+                      (click)="saveJob(job)">✓ Save</button>
+              <button class="mj-btn-reject"
+                      *ngIf="editingJobId === job.id"
+                      (click)="cancelEdit()">✕ Cancel</button>
+              <button class="mj-btn-delete"
+                      *ngIf="editingJobId !== job.id"
+                      (click)="deleteJob(job.id!)">🗑</button>
+            </div>
+          </div>
+
+        </div>
+        <!-- end .mj-card-summary -->
+
+        <!-- ══ APPLICANTS SPLIT PANEL (collapsible) ══ -->
+        <div class="mj-applicants-panel"
+             *ngIf="job.id && editingJobId !== job.id && isApplicantsExpanded(job.id)">
+
+          <!-- Loading state -->
+          <div class="mj-prop-loading" *ngIf="isLoadingProposals(job.id)">
+            <span class="mj-mini-spinner"></span> Loading applicants...
+          </div>
+
+          <!-- Empty state -->
+          <div class="mj-no-proposals" *ngIf="!isLoadingProposals(job.id) && getProposals(job.id).length === 0">
+            <span class="mj-empty-icon-sm">📭</span>
+            No applications received yet.
+          </div>
+
+          <!-- Split view: list + detail -->
+          <div class="mj-split"
+               *ngIf="!isLoadingProposals(job.id) && getProposals(job.id).length > 0">
+
+            <!-- LEFT: compact applicant list -->
+            <div class="mj-applicant-list">
+              <div class="mj-applicant-list-header">Proposals</div>
+
+              <div class="mj-applicant-row"
+                   *ngFor="let proposal of getProposals(job.id)"
+                   [class.mj-applicant-selected]="isSelectedApplicant(job.id!, proposal.id)"
+                   (click)="selectApplicant(job.id!, proposal)">
+
+                <div class="mj-applicant-avatar">
+                  {{ getInitial(proposal.freelancer?.username) }}
+                </div>
+
+                <div class="mj-applicant-info">
+                  <div class="mj-applicant-name">{{ proposal.freelancer?.username || 'Freelancer' }}</div>
+                  <div class="mj-applicant-bid">₹{{ proposal.bidAmount }}</div>
+                </div>
+
+                <span class="mj-pstatus-badge mj-pstatus-{{ (proposal.status || 'pending').toLowerCase() }}">
+                  {{ proposal.status }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- RIGHT: freelancer detail panel -->
+            <div class="mj-detail-panel" *ngIf="getSelectedProposal(job.id) as sel">
+
+              <!-- Header -->
+              <div class="mj-detail-header">
+                <div class="mj-detail-avatar">{{ getInitial(sel.freelancer?.username) }}</div>
+                <div class="mj-detail-header-info">
+                  <div class="mj-detail-name">{{ sel.freelancer?.username || 'Freelancer' }}</div>
+                  <div class="mj-detail-email">{{ sel.freelancer?.email || '' }}</div>
+                </div>
+                <span class="mj-pstatus-badge mj-pstatus-{{ (sel.status || 'pending').toLowerCase() }}">
+                  {{ sel.status }}
+                </span>
+              </div>
+
+              <!-- Bid highlight -->
+              <div class="mj-detail-bid-row">
+                <div class="mj-detail-bid-label">Bid Amount</div>
+                <div class="mj-detail-bid-val">₹{{ sel.bidAmount }}</div>
+                <div class="mj-detail-date" *ngIf="sel.appliedAt">
+                  Applied {{ sel.appliedAt | date:'MMM d, y' }}
+                </div>
+              </div>
+
+              <!-- Details grid -->
+              <div class="mj-detail-grid">
+
+                <div class="mj-detail-item" *ngIf="sel.freelancer?.skills">
+                  <div class="mj-detail-item-lbl">
+                    <span class="mj-di-icon">🛠</span> Skills
+                  </div>
+                  <div class="mj-detail-item-val">{{ sel.freelancer!.skills }}</div>
+                </div>
+
+                <div class="mj-detail-item" *ngIf="sel.freelancer?.bio">
+                  <div class="mj-detail-item-lbl">
+                    <span class="mj-di-icon">📄</span> Bio
+                  </div>
+                  <div class="mj-detail-item-val">{{ sel.freelancer!.bio }}</div>
+                </div>
+
+                <div class="mj-detail-item" *ngIf="sel.freelancerProfile?.experienceYears != null">
+                  <div class="mj-detail-item-lbl">
+                    <span class="mj-di-icon">🏅</span> Experience
+                  </div>
+                  <div class="mj-detail-item-val">
+                    {{ sel.freelancerProfile!.experienceYears }} yr{{ sel.freelancerProfile!.experienceYears !== 1 ? 's' : '' }}
+                  </div>
+                </div>
+
+                <div class="mj-detail-item" *ngIf="sel.freelancerProfile?.highestEducation">
+                  <div class="mj-detail-item-lbl">
+                    <span class="mj-di-icon">🎓</span> Education
+                  </div>
+                  <div class="mj-detail-item-val">{{ sel.freelancerProfile!.highestEducation }}</div>
+                </div>
+
+                <div class="mj-detail-item" *ngIf="sel.freelancerProfile?.linkedinUrl">
+                  <div class="mj-detail-item-lbl">
+                    <span class="mj-di-icon">🔗</span> LinkedIn
+                  </div>
+                  <div class="mj-detail-item-val">
+                    <a [href]="sel.freelancerProfile!.linkedinUrl" target="_blank" rel="noopener">View Profile →</a>
+                  </div>
+                </div>
+
+                <div class="mj-detail-item" *ngIf="sel.freelancerProfile?.githubUrl">
+                  <div class="mj-detail-item-lbl">
+                    <span class="mj-di-icon">💻</span> GitHub
+                  </div>
+                  <div class="mj-detail-item-val">
+                    <a [href]="sel.freelancerProfile!.githubUrl" target="_blank" rel="noopener">View Profile →</a>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Accept / Reject actions -->
+              <div class="mj-detail-actions"
+                   *ngIf="sel.status === 'PENDING' && job.status !== 'CLOSED'">
+                <button class="mj-btn-accept"
+                        [disabled]="isUpdatingProposal(sel.id)"
+                        (click)="acceptProposal(sel, job)">
+                  <span *ngIf="isUpdatingProposal(sel.id)">...</span>
+                  <span *ngIf="!isUpdatingProposal(sel.id)">✓ Accept Proposal</span>
+                </button>
+                <button class="mj-btn-reject"
+                        [disabled]="isUpdatingProposal(sel.id)"
+                        (click)="rejectProposal(sel, job)">
+                  <span *ngIf="isUpdatingProposal(sel.id)">...</span>
+                  <span *ngIf="!isUpdatingProposal(sel.id)">✗ Reject</span>
+                </button>
+              </div>
+
+            </div>
+            <!-- end detail panel -->
+
+          </div>
+          <!-- end .mj-split -->
+
+        </div>
+        <!-- end .mj-applicants-panel -->
+
+      </div>
+      <!-- end job card -->
+
+    </div>
+    <!-- end jobs list -->
+
+  </main>
+
+</div>

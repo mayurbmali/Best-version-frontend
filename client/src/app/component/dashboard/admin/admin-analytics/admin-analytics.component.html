@@ -1,0 +1,190 @@
+<div class="aa-wrap" *ngIf="overview; else loadingTpl">
+
+  <div class="aa-grid">
+
+    <!-- ── User Distribution Donut ───────────────────────────────────────── -->
+    <div class="aa-card">
+      <div class="aa-card__header">
+        <span class="aa-card__icon">👥</span>
+        <div>
+          <div class="aa-card__title">User Distribution</div>
+          <div class="aa-card__sub">Clients vs Freelancers</div>
+        </div>
+      </div>
+
+      <div class="aa-chart-donut-wrap">
+        <svg class="aa-donut" viewBox="0 0 100 100">
+          <defs>
+            <linearGradient id="gClient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#7c3aed"/>
+              <stop offset="100%" stop-color="#a855f7"/>
+            </linearGradient>
+            <linearGradient id="gFreelancer" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#06b6d4"/>
+              <stop offset="100%" stop-color="#22d3ee"/>
+            </linearGradient>
+          </defs>
+          <!-- Track -->
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
+          <!-- Client arc -->
+          <circle cx="50" cy="50" r="42" fill="none"
+                  stroke="url(#gClient)" stroke-width="10"
+                  [attr.stroke-dasharray]="clientDash"
+                  stroke-dashoffset="0"
+                  stroke-linecap="round"
+                  transform="rotate(-90 50 50)"
+                  class="aa-arc"/>
+          <!-- Freelancer arc -->
+          <circle cx="50" cy="50" r="42" fill="none"
+                  stroke="url(#gFreelancer)" stroke-width="10"
+                  [attr.stroke-dasharray]="freelancerDash"
+                  [attr.stroke-dashoffset]="clientOffset - (clientPct / 100 * circumference)"
+                  stroke-linecap="round"
+                  transform="rotate(-90 50 50)"
+                  class="aa-arc"/>
+          <!-- Center text -->
+          <text x="50" y="46" text-anchor="middle" class="donut-center-val">{{ overview?.totalUsers || 0 }}</text>
+          <text x="50" y="57" text-anchor="middle" class="donut-center-lbl">Users</text>
+        </svg>
+
+        <div class="aa-legend">
+          <div class="aa-legend-item">
+            <span class="aa-legend-dot" style="background:#a855f7"></span>
+            <span class="aa-legend-label">Clients</span>
+            <span class="aa-legend-val">{{ clientPct }}%</span>
+          </div>
+          <div class="aa-legend-item">
+            <span class="aa-legend-dot" style="background:#22d3ee"></span>
+            <span class="aa-legend-label">Freelancers</span>
+            <span class="aa-legend-val">{{ freelancerPct }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Job Status Bars ───────────────────────────────────────────────── -->
+    <div class="aa-card">
+      <div class="aa-card__header">
+        <span class="aa-card__icon">💼</span>
+        <div>
+          <div class="aa-card__title">Job Status Breakdown</div>
+          <div class="aa-card__sub">Distribution across statuses</div>
+        </div>
+      </div>
+
+      <div class="aa-bars" *ngIf="jobInsights">
+        <div class="aa-bar-row" *ngFor="let bar of jobBars">
+          <div class="aa-bar-meta">
+            <span class="aa-bar-label">{{ bar.label }}</span>
+            <span class="aa-bar-value">{{ bar.value }}</span>
+          </div>
+          <div class="aa-bar-track">
+            <div class="aa-bar-fill"
+                 [style.width.%]="bar.pct"
+                 [style.background]="bar.color"></div>
+          </div>
+          <span class="aa-bar-pct">{{ bar.pct }}%</span>
+        </div>
+        <div class="aa-bar-total">
+          <span>Total Jobs</span>
+          <strong>{{ jobInsights?.totalJobs || 0 }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Proposal Status Donut ─────────────────────────────────────────── -->
+    <div class="aa-card">
+      <div class="aa-card__header">
+        <span class="aa-card__icon">📝</span>
+        <div>
+          <div class="aa-card__title">Proposal Analytics</div>
+          <div class="aa-card__sub">Status distribution</div>
+        </div>
+      </div>
+
+      <div class="aa-chart-donut-wrap">
+        <svg class="aa-donut" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
+          <circle *ngFor="let seg of proposalSegments"
+                  cx="50" cy="50" r="42" fill="none"
+                  [attr.stroke]="seg.color"
+                  stroke-width="10"
+                  [attr.stroke-dasharray]="seg.dash"
+                  [attr.stroke-dashoffset]="seg.offset"
+                  stroke-linecap="butt"
+                  transform="rotate(-90 50 50)"
+                  class="aa-arc"/>
+          <text x="50" y="46" text-anchor="middle" class="donut-center-val">{{ overview?.totalProposals || 0 }}</text>
+          <text x="50" y="57" text-anchor="middle" class="donut-center-lbl">Total</text>
+        </svg>
+
+        <div class="aa-legend">
+          <div class="aa-legend-item" *ngFor="let seg of proposalSegments">
+            <span class="aa-legend-dot" [style.background]="seg.color"></span>
+            <span class="aa-legend-label">{{ seg.label }}</span>
+            <span class="aa-legend-val">{{ seg.pct }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Subscription Radial ───────────────────────────────────────────── -->
+    <div class="aa-card">
+      <div class="aa-card__header">
+        <span class="aa-card__icon">⭐</span>
+        <div>
+          <div class="aa-card__title">Subscription Rate</div>
+          <div class="aa-card__sub">Premium members vs total</div>
+        </div>
+      </div>
+
+      <div class="aa-radial-wrap">
+        <svg class="aa-radial" viewBox="0 0 100 100">
+          <defs>
+            <linearGradient id="gSub" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#d97706"/>
+              <stop offset="100%" stop-color="#fbbf24"/>
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12"/>
+          <circle cx="50" cy="50" r="42" fill="none"
+                  stroke="url(#gSub)" stroke-width="12"
+                  [attr.stroke-dasharray]="subDash"
+                  stroke-dashoffset="0"
+                  stroke-linecap="round"
+                  transform="rotate(-90 50 50)"
+                  class="aa-arc"/>
+          <text x="50" y="46" text-anchor="middle" class="donut-center-val" style="fill:#fbbf24">{{ subPct }}%</text>
+          <text x="50" y="57" text-anchor="middle" class="donut-center-lbl">Premium</text>
+        </svg>
+
+        <div class="aa-radial-stats">
+          <div class="aa-rstat">
+            <div class="aa-rstat__val" style="color:#fbbf24">{{ overview?.activeSubscriptions || 0 }}</div>
+            <div class="aa-rstat__lbl">Subscribed</div>
+          </div>
+          <div class="aa-rstat-divider"></div>
+          <div class="aa-rstat">
+            <div class="aa-rstat__val">{{ (overview?.totalUsers || 0) - (overview?.activeSubscriptions || 0) }}</div>
+            <div class="aa-rstat__lbl">Free tier</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aa-hire-rate">
+        <span class="aa-hire-label">Hire Rate</span>
+        <div class="aa-hire-bar-track">
+          <div class="aa-hire-bar-fill" [style.width]="(overview?.proposalAcceptanceRate || 0) + '%'"></div>
+        </div>
+        <span class="aa-hire-pct">{{ overview?.proposalAcceptanceRate || 0 }}%</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="aa-grid">
+    <div class="aa-skeleton" *ngFor="let i of [1,2,3,4]"></div>
+  </div>
+</ng-template>

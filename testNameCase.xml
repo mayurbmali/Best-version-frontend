@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+
+    <!-- =============================== -->
+    <!-- JobListComponent Tests (13)    -->
+    <!-- =============================== -->
+    <property
+        name="JobListComponent should create the component"
+        value="JobListComponent should create the component"
+    />
+    <property
+        name="JobListComponent should fetch jobs and set role on init"
+        value="JobListComponent should fetch jobs and set role on init"
+    />
+    <property
+        name="JobListComponent should handle error when fetching jobs fails"
+        value="JobListComponent should handle error when fetching jobs fails"
+    />
+    <property
+        name="JobListComponent should apply to a job and update status"
+        value="JobListComponent should apply to a job and update status"
+    />
+    <property
+        name="JobListComponent should handle 409 error when applying to a job"
+        value="JobListComponent should handle 409 error when applying to a job"
+    />
+    <property
+        name="JobListComponent should handle other errors when applying to a job"
+        value="JobListComponent should handle other errors when applying to a job"
+    />
+    <property
+        name="JobListComponent should filter jobs by title in searchJobs()"
+        value="JobListComponent should filter jobs by title in searchJobs()"
+    />
+    <property
+        name="JobListComponent should reset job list if searchTitle is empty"
+        value="JobListComponent should reset job list if searchTitle is empty"
+    />
+    <property
+        name="JobListComponent should initialize with empty job list before ngOnInit"
+        value="JobListComponent should initialize with empty job list before ngOnInit"
+    />
+    <property
+        name="JobListComponent should return empty array when search term matches no jobs"
+        value="JobListComponent should return empty array when search term matches no jobs"
+    />
+    <property
+        name="JobListComponent should set roleName to CLIENT when AuthService returns CLIENT"
+        value="JobListComponent should set roleName to CLIENT when AuthService returns CLIENT"
+    />
+    <property
+        name="JobListComponent should only update the applied job status, not others"
+        value="JobListComponent should only update the applied job status, not others"
+    />
+    <property
+        name="JobListComponent should have searchTitle as empty string initially"
+        value="JobListComponent should have searchTitle as empty string initially"
+    />
+
+    <!-- =============================== -->
+    <!-- JobCreateComponent Tests (10)  -->
+    <!-- =============================== -->
+    <property
+        name="JobCreateComponent should create the component"
+        value="JobCreateComponent should create the component"
+    />
+    <property
+        name="JobCreateComponent should initialize the form with required controls"
+        value="JobCreateComponent should initialize the form with required controls"
+    />
+    <property
+        name="JobCreateComponent should not submit if form is invalid"
+        value="JobCreateComponent should not submit if form is invalid"
+    />
+    <property
+        name="JobCreateComponent should submit valid form and navigate on success"
+        value="JobCreateComponent should submit valid form and navigate on success"
+    />
+    <property
+        name="JobCreateComponent should handle error on job creation failure"
+        value="JobCreateComponent should handle error on job creation failure"
+    />
+    <property
+        name="JobCreateComponent form should be invalid when no controls are filled"
+        value="JobCreateComponent form should be invalid when no controls are filled"
+    />
+    <property
+        name="JobCreateComponent title control should be invalid when empty"
+        value="JobCreateComponent title control should be invalid when empty"
+    />
+    <property
+        name="JobCreateComponent description control should be invalid when empty"
+        value="JobCreateComponent description control should be invalid when empty"
+    />
+    <property
+        name="JobCreateComponent form should be invalid when budget is not provided"
+        value="JobCreateComponent form should be invalid when budget is not provided"
+    />
+    <property
+        name="JobCreateComponent status control should be invalid when empty"
+        value="JobCreateComponent status control should be invalid when empty"
+    />
+
+    <!-- =============================== -->
+    <!-- MyJobComponent Tests (10)      -->
+    <!-- =============================== -->
+    <property
+        name="MyJobComponent should create the component"
+        value="MyJobComponent should create the component"
+    />
+    <property
+        name="MyJobComponent should fetch and filter jobs on init"
+        value="MyJobComponent should fetch and filter jobs on init"
+    />
+    <property
+        name="MyJobComponent should handle error when fetching jobs fails"
+        value="MyJobComponent should handle error when fetching jobs fails"
+    />
+    <property
+        name="MyJobComponent should update job status"
+        value="MyJobComponent should update job status"
+    />
+    <property
+        name="MyJobComponent should handle error when updating job status fails"
+        value="MyJobComponent should handle error when updating job status fails"
+    />
+    <property
+        name="MyJobComponent should initialize with empty jobs array"
+        value="MyJobComponent should initialize with empty jobs array"
+    />
+    <property
+        name="MyJobComponent should exclude REJECTED jobs from the displayed list"
+        value="MyJobComponent should exclude REJECTED jobs from the displayed list"
+    />
+    <property
+        name="MyJobComponent should only update status of the correct job by id"
+        value="MyJobComponent should only update status of the correct job by id"
+    />
+    <property
+        name="MyJobComponent should call getMyJobs with correct userId from localStorage"
+        value="MyJobComponent should call getMyJobs with correct userId from localStorage"
+    />
+    <property
+        name="MyJobComponent should not update any job when jobId does not match"
+        value="MyJobComponent should not update any job when jobId does not match"
+    />
+
+    <!-- =============================== -->
+    <!-- MyProposalComponent Tests (8)  -->
+    <!-- =============================== -->
+    <property
+        name="MyProposalComponent should create the component"
+        value="MyProposalComponent should create the component"
+    />
+    <property
+        name="MyProposalComponent should fetch proposals on init"
+        value="MyProposalComponent should fetch proposals on init"
+    />
+    <property
+        name="MyProposalComponent should handle error when fetching proposals fails"
+        value="MyProposalComponent should handle error when fetching proposals fails"
+    />
+    <property
+        name="MyProposalComponent should initialize with empty proposals array"
+        value="MyProposalComponent should initialize with empty proposals array"
+    />
+    <property
+        name="MyProposalComponent should set proposals to correct count when data returned"
+        value="MyProposalComponent should set proposals to correct count when data returned"
+    />
+    <property
+        name="MyProposalComponent should leave proposals empty when error occurs"
+        value="MyProposalComponent should leave proposals empty when error occurs"
+    />
+    <property
+        name="MyProposalComponent should call getMyProposals exactly once on ngOnInit"
+        value="MyProposalComponent should call getMyProposals exactly once on ngOnInit"
+    />
+    <property
+        name="MyProposalComponent proposals array should remain empty before ngOnInit is called"
+        value="MyProposalComponent proposals array should remain empty before ngOnInit is called"
+    />
+
+    <!-- =============================== -->
+    <!-- ProfileComponent Tests (9)     -->
+    <!-- =============================== -->
+    <property
+        name="ProfileComponent should create the component"
+        value="ProfileComponent should create the component"
+    />
+    <property
+        name="ProfileComponent should fetch profile and users on init"
+        value="ProfileComponent should fetch profile and users on init"
+    />
+    <property
+        name="ProfileComponent should handle error when getLoggedInUser fails"
+        value="ProfileComponent should handle error when getLoggedInUser fails"
+    />
+    <property
+        name="ProfileComponent should filter out ADMIN users in getUser()"
+        value="ProfileComponent should filter out ADMIN users in getUser()"
+    />
+    <property
+        name="ProfileComponent ADMIN role should be set correctly on component"
+        value="ProfileComponent ADMIN role should be set correctly on component"
+    />
+    <property
+        name="ProfileComponent should set users to empty when getUsers returns empty array"
+        value="ProfileComponent should set users to empty when getUsers returns empty array"
+    />
+    <property
+        name="ProfileComponent should set profile correctly after successful load"
+        value="ProfileComponent should set profile correctly after successful load"
+    />
+    <property
+        name="ProfileComponent should have zero users when getUsers returns empty array"
+        value="ProfileComponent should have zero users when getUsers returns empty array"
+    />
+    <property
+        name="ProfileComponent should initialize errorMessage as empty string"
+        value="ProfileComponent should initialize errorMessage as empty string"
+    />
+
+    <!-- =============================== -->
+    <!-- JobService Tests (13)          -->
+    <!-- =============================== -->
+    <property
+        name="JobService should be created"
+        value="JobService should be created"
+    />
+    <property
+        name="JobService should create a job"
+        value="JobService should create a job"
+    />
+    <property
+        name="JobService should get a job by ID"
+        value="JobService should get a job by ID"
+    />
+    <property
+        name="JobService should get job list"
+        value="JobService should get job list"
+    />
+    <property
+        name="JobService should apply to a job"
+        value="JobService should apply to a job"
+    />
+    <property
+        name="JobService should get my jobs"
+        value="JobService should get my jobs"
+    />
+    <property
+        name="JobService should update job status"
+        value="JobService should update job status"
+    />
+    <property
+        name="JobService should get user report"
+        value="JobService should get user report"
+    />
+    <property
+        name="JobService getJobList should send Authorization header"
+        value="JobService getJobList should send Authorization header"
+    />
+    <property
+        name="JobService getMyJobs should send Authorization header"
+        value="JobService getMyJobs should send Authorization header"
+    />
+    <property
+        name="JobService applyToJob should send Authorization header"
+        value="JobService applyToJob should send Authorization header"
+    />
+    <property
+        name="JobService updateJobStatus should send Authorization header"
+        value="JobService updateJobStatus should send Authorization header"
+    />
+    <property
+        name="JobService getUserReport should send Authorization header"
+        value="JobService getUserReport should send Authorization header"
+    />
+
+    <!-- =============================== -->
+    <!-- ProposalService Tests (8)      -->
+    <!-- =============================== -->
+    <property
+        name="ProposalService should be created"
+        value="ProposalService should be created"
+    />
+    <property
+        name="ProposalService should send POST request to create proposal"
+        value="ProposalService should send POST request to create proposal"
+    />
+    <property
+        name="ProposalService should send GET request to fetch proposals"
+        value="ProposalService should send GET request to fetch proposals"
+    />
+    <property
+        name="ProposalService getMyProposals should use correct endpoint URL"
+        value="ProposalService getMyProposals should use correct endpoint URL"
+    />
+    <property
+        name="ProposalService create should use correct URL with freelancerId"
+        value="ProposalService create should use correct URL with freelancerId"
+    />
+    <property
+        name="ProposalService getMyProposals should return empty array when API returns empty"
+        value="ProposalService getMyProposals should return empty array when API returns empty"
+    />
+    <property
+        name="ProposalService create should send Content-Type application/json"
+        value="ProposalService create should send Content-Type application/json"
+    />
+    <property
+        name="ProposalService getMyProposals should send Authorization header with Bearer token"
+        value="ProposalService getMyProposals should send Authorization header with Bearer token"
+    />
+
+    <!-- =============================== -->
+    <!-- Backend - Context Test (1)     -->
+    <!-- =============================== -->
+    <property
+        name="contextLoads"
+        value="FreelancerApplicationTests contextLoads"
+    />
+
+    <!-- =============================== -->
+    <!-- Backend - UserService Tests (8)-->
+    <!-- =============================== -->
+    <property
+        name="testRegisterUser"
+        value="FreelancerApplicationTests testRegisterUser"
+    />
+    <property
+        name="testGetUserByUsername"
+        value="FreelancerApplicationTests testGetUserByUsername"
+    />
+    <property
+        name="testLoadUserByUsername_Success"
+        value="FreelancerApplicationTests testLoadUserByUsername_Success"
+    />
+    <property
+        name="testLoadUserByUsername_NotFound"
+        value="FreelancerApplicationTests testLoadUserByUsername_NotFound"
+    />
+    <property
+        name="testFindByUsername"
+        value="FreelancerApplicationTests testFindByUsername"
+    />
+    <property
+        name="testGetUserProfile"
+        value="FreelancerApplicationTests testGetUserProfile"
+    />
+    <property
+        name="testGetUserRolesDetails"
+        value="FreelancerApplicationTests testGetUserRolesDetails"
+    />
+    <property
+        name="testFindAllUser"
+        value="FreelancerApplicationTests testFindAllUser"
+    />
+
+    <!-- =============================== -->
+    <!-- Backend - ProposalService (7)  -->
+    <!-- =============================== -->
+    <property
+        name="testCreateProposal"
+        value="FreelancerApplicationTests testCreateProposal"
+    />
+    <property
+        name="testGetAllProposals"
+        value="FreelancerApplicationTests testGetAllProposals"
+    />
+    <property
+        name="testGetProposalById"
+        value="FreelancerApplicationTests testGetProposalById"
+    />
+    <property
+        name="testUpdateProposal"
+        value="FreelancerApplicationTests testUpdateProposal"
+    />
+    <property
+        name="testDeleteProposal"
+        value="FreelancerApplicationTests testDeleteProposal"
+    />
+    <property
+        name="testGetProposalsByFreelancerUsername"
+        value="FreelancerApplicationTests testGetProposalsByFreelancerUsername"
+    />
+    <property
+        name="testGetProposalsByFreelancerUsername_UserNotFound"
+        value="FreelancerApplicationTests testGetProposalsByFreelancerUsername_UserNotFound"
+    />
+
+    <!-- =============================== -->
+    <!-- Backend - JobService Tests (8) -->
+    <!-- =============================== -->
+    <property
+        name="testCreateJob"
+        value="FreelancerApplicationTests testCreateJob"
+    />
+    <property
+        name="testGetAllJobs"
+        value="FreelancerApplicationTests testGetAllJobs"
+    />
+    <property
+        name="testGetJobById"
+        value="FreelancerApplicationTests testGetJobById"
+    />
+    <property
+        name="testUpdateJob"
+        value="FreelancerApplicationTests testUpdateJob"
+    />
+    <property
+        name="testDeleteJob"
+        value="FreelancerApplicationTests testDeleteJob"
+    />
+    <property
+        name="testApplyToJob"
+        value="FreelancerApplicationTests testApplyToJob"
+    />
+    <property
+        name="testHasUserAlreadyApplied"
+        value="FreelancerApplicationTests testHasUserAlreadyApplied"
+    />
+    <property
+        name="testUpdateJobStatus"
+        value="FreelancerApplicationTests testUpdateJobStatus"
+    />
+
+    <!-- =============================== -->
+    <!-- Backend - AuthController (8)   -->
+    <!-- =============================== -->
+    <property
+        name="register_ValidUser_Returns201"
+        value="FreelancerApplicationTests register_ValidUser_Returns201"
+    />
+    <property
+        name="login_ValidClient_ReturnsToken"
+        value="FreelancerApplicationTests login_ValidClient_ReturnsToken"
+    />
+    <property
+        name="login_ValidFreelancer_ReturnsToken"
+        value="FreelancerApplicationTests login_ValidFreelancer_ReturnsToken"
+    />
+    <property
+        name="login_ValidAdmin_ReturnsToken"
+        value="FreelancerApplicationTests login_ValidAdmin_ReturnsToken"
+    />
+    <property
+        name="login_InvalidCredentials_Returns401"
+        value="FreelancerApplicationTests login_InvalidCredentials_Returns401"
+    />
+    <property
+        name="getProfile_ValidToken_ReturnsUser"
+        value="FreelancerApplicationTests getProfile_ValidToken_ReturnsUser"
+    />
+    <property
+        name="getProfile_NoToken_Returns403"
+        value="FreelancerApplicationTests getProfile_NoToken_Returns403"
+    />
+    <property
+        name="getAllUsers_WithToken_ReturnsUserList"
+        value="FreelancerApplicationTests getAllUsers_WithToken_ReturnsUserList"
+    />
+
+    <!-- =============================== -->
+    <!-- Backend - JobController (10)   -->
+    <!-- =============================== -->
+    <property
+        name="createJob_ValidData_Returns200"
+        value="FreelancerApplicationTests createJob_ValidData_Returns200"
+    />
+    <property
+        name="getAllJobs_WithToken_ReturnsJobList"
+        value="FreelancerApplicationTests getAllJobs_WithToken_ReturnsJobList"
+    />
+    <property
+        name="getAllJobs_NoToken_Returns403"
+        value="FreelancerApplicationTests getAllJobs_NoToken_Returns403"
+    />
+    <property
+        name="getJobById_ValidId_ReturnsJob"
+        value="FreelancerApplicationTests getJobById_ValidId_ReturnsJob"
+    />
+    <property
+        name="updateJobStatus_Returns200WithMessage"
+        value="FreelancerApplicationTests updateJobStatus_Returns200WithMessage"
+    />
+    <property
+        name="applyToJob_AsFreelancer_ReturnsAppliedSuccessfully"
+        value="FreelancerApplicationTests applyToJob_AsFreelancer_ReturnsAppliedSuccessfully"
+    />
+    <property
+        name="applyToJob_AlreadyApplied_ReturnsAlreadyApplied"
+        value="FreelancerApplicationTests applyToJob_AlreadyApplied_ReturnsAlreadyApplied"
+    />
+    <property
+        name="getMyPostedJobs_AsClient_ReturnsClientJobs"
+        value="FreelancerApplicationTests getMyPostedJobs_AsClient_ReturnsClientJobs"
+    />
+    <property
+        name="getUserReport_WithToken_ReturnsReport"
+        value="FreelancerApplicationTests getUserReport_WithToken_ReturnsReport"
+    />
+    <property
+        name="deleteJob_ValidId_Returns200"
+        value="FreelancerApplicationTests deleteJob_ValidId_Returns200"
+    />
+
+    <!-- =============================== -->
+    <!-- Backend - ProposalController(7)-->
+    <!-- =============================== -->
+    <property
+        name="createProposal_AsFreelancer_ReturnsProposal"
+        value="FreelancerApplicationTests createProposal_AsFreelancer_ReturnsProposal"
+    />
+    <property
+        name="getAllProposals_WithToken_Returns403"
+        value="FreelancerApplicationTests getAllProposals_WithToken_Returns403"
+    />
+    <property
+        name="getAllProposals_NoToken_Returns403"
+        value="FreelancerApplicationTests getAllProposals_NoToken_Returns403"
+    />
+    <property
+        name="getProposalById_Returns403DueToSecurityConfig"
+        value="FreelancerApplicationTests getProposalById_Returns403DueToSecurityConfig"
+    />
+    <property
+        name="updateProposal_ValidData_ReturnsUpdatedProposal"
+        value="FreelancerApplicationTests updateProposal_ValidData_ReturnsUpdatedProposal"
+    />
+    <property
+        name="getMyProposals_AsFreelancer_ReturnsMyProposals"
+        value="FreelancerApplicationTests getMyProposals_AsFreelancer_ReturnsMyProposals"
+    />
+    <property
+        name="deleteProposal_ValidId_Returns200"
+        value="FreelancerApplicationTests deleteProposal_ValidId_Returns200"
+    />
+
+</properties>

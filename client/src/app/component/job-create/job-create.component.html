@@ -1,0 +1,150 @@
+<div class="jl-shell">
+
+  <!-- Modern Toast -->
+  <div class="nx-toast" [class.nx-toast--visible]="toastVisible"
+       [class.nx-toast--success]="toastType==='success'" [class.nx-toast--error]="toastType==='error'"
+       [class.nx-toast--warning]="toastType==='warning'" [class.nx-toast--info]="toastType==='info'">
+    <span class="nx-toast-icon">
+      <span *ngIf="toastType==='success'">✅</span><span *ngIf="toastType==='error'">❌</span>
+      <span *ngIf="toastType==='warning'">⚠️</span><span *ngIf="toastType==='info'">ℹ️</span>
+    </span>
+    <span class="nx-toast-msg">{{ toastMessage }}</span>
+    <button class="nx-toast-close" (click)="dismissToast()">✕</button>
+  </div>
+
+
+  <app-sidenav></app-sidenav>
+
+  <!-- MAIN -->
+  <main class="jl-main">
+
+    <!-- HEADER -->
+    <div class="jc-header-bar">
+      <div>
+        <h1 class="jc-page-title">Post a <em>New Job</em></h1>
+        <p class="jc-page-sub">Create and publish a professional job listing for freelancers.</p>
+      </div>
+      <button class="jc-back-btn" routerLink="/job-list">← Back</button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="jc-layout">
+
+      <!-- FORM CARD -->
+      <div class="jc-form-card">
+
+        <div class="jc-section-head">
+          <h2>Job Information</h2>
+          <p class="jc-helper">Fill out the details below to publish your job listing.</p>
+        </div>
+
+        <form [formGroup]="jobForm" novalidate>
+
+          <!-- TITLE -->
+          <div class="jc-field">
+            <label class="jc-label">Job Title</label>
+            <div class="jc-input-wrap" [class.jc-error]="f['title'].invalid && f['title'].touched">
+              <input type="text" class="jc-input" formControlName="title"
+                placeholder="e.g. Senior Angular Developer Needed" />
+            </div>
+            <div class="jc-error-text" *ngIf="f['title'].invalid && f['title'].touched">
+              Job title is required.
+            </div>
+          </div>
+
+          <!-- DESCRIPTION -->
+          <div class="jc-field">
+            <label class="jc-label">Description</label>
+            <div class="jc-input-wrap jc-textarea-wrap"
+              [class.jc-error]="f['description'].invalid && f['description'].touched">
+              <textarea class="jc-input jc-textarea" formControlName="description" rows="6" maxlength="500"
+                placeholder="Describe project requirements, preferred skills, timeline and deliverables..."></textarea>
+            </div>
+            <div class="jc-char-count">{{ f['description'].value?.length || 0 }}/500</div>
+            <div class="jc-error-text" *ngIf="f['description'].invalid && f['description'].touched">
+              Description is required.
+            </div>
+          </div>
+
+          <!-- GRID -->
+          <div class="jc-grid">
+
+            <!-- BUDGET -->
+            <div class="jc-field">
+              <label class="jc-label">Budget (₹)</label>
+              <div class="jc-input-wrap" [class.jc-error]="f['budget'].invalid && f['budget'].touched">
+                <span class="jc-currency">₹</span>
+                <input type="number" min="1" class="jc-input" formControlName="budget" placeholder="15000" />
+              </div>
+              <div class="jc-error-text" *ngIf="f['budget'].errors?.['required'] && f['budget'].touched">
+                Budget is required.
+              </div>
+              <div class="jc-error-text" *ngIf="f['budget'].errors?.['min'] && f['budget'].touched">
+                Budget must be greater than 0.
+              </div>
+            </div>
+
+            <!-- STATUS -->
+            <div class="jc-field">
+              <label class="jc-label">Status</label>
+              <div class="jc-input-wrap">
+                <select class="jc-input jc-select" formControlName="status">
+                  <option value="OPEN">OPEN</option>
+                  <option value="CLOSED">CLOSED</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- SUBMIT BUTTON -->
+          <button
+            type="button"
+            class="jc-submit-btn"
+            [class.jc-btn-loading]="loading"
+            (click)="onSubmit()">
+            <span *ngIf="!loading">🚀 Publish Job</span>
+            <span *ngIf="loading">Publishing...</span>
+          </button>
+
+        </form>
+
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <aside class="jc-side-panel">
+
+        <div class="jc-panel-card">
+          <div class="jc-panel-title">Quick Tips</div>
+          <ul class="jc-tips">
+            <li>Use a clear and specific title.</li>
+            <li>Mention required technologies and skills.</li>
+            <li>Set realistic budget expectations.</li>
+            <li>Include timeline and deliverables.</li>
+          </ul>
+        </div>
+
+        <div class="jc-panel-card">
+          <div class="jc-panel-title">Estimated Reach</div>
+          <div class="jc-stats">
+            <div><strong>2.4K+</strong><span>Freelancers</span></div>
+            <div><strong>~3h</strong><span>Avg Response</span></div>
+            <div><strong>98%</strong><span>Match Rate</span></div>
+          </div>
+        </div>
+
+        <div class="jc-panel-card jc-status-card">
+          <span class="jc-live-dot"></span>
+          <div>
+            <div class="jc-status-title">Platform Status</div>
+            <div class="jc-status-sub">All systems operational</div>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+</div>

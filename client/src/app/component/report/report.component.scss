@@ -1,0 +1,23 @@
+/* Layout override: align with the shared sidenav (240px fixed) */
+.main-content { margin-left: 240px; padding: 32px; }
+
+.report-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(108,99,255,0.12) 0%, rgba(0,212,170,0.06) 100%);
+  border: 1px solid rgba(108,99,255,0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+
+  .report-banner-icon { font-size: 18px; }
+}
+
+.user-skills {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}

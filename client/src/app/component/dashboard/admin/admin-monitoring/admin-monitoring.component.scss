@@ -1,0 +1,175 @@
+.am-wrap { padding: 0 40px; margin-bottom: 36px; }
+
+// ── Section header ────────────────────────────────────────────────────────────
+.am-section-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 20px;
+}
+
+.am-section-icon {
+  width: 40px; height: 40px; border-radius: 11px;
+  background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+
+.am-section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px; font-weight: 700; color: #f1f5f9;
+}
+
+.am-section-sub { font-size: 11px; color: #475569; margin-top: 2px; }
+
+.am-refresh-btn {
+  margin-left: auto;
+  padding: 8px 16px;
+  background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.2);
+  border-radius: 8px; color: #22d3ee;
+  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.18s;
+  &:hover { background: rgba(6,182,212,0.15); }
+}
+
+.am-spinning { animation: amSpin 1s linear infinite; }
+
+// ── Grid ─────────────────────────────────────────────────────────────────────
+.am-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  @media (max-width: 900px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
+
+// ── Card ─────────────────────────────────────────────────────────────────────
+.am-card {
+  background: rgba(11,16,32,0.85);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative; overflow: hidden;
+  animation: amIn 0.5s ease both;
+  transition: transform 0.2s, border-color 0.2s;
+
+  &:hover { transform: translateY(-2px); }
+
+  &__icon {
+    font-size: 20px; margin-bottom: 10px; display: block;
+  }
+
+  &__label {
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: #64748b; margin-bottom: 8px;
+  }
+
+  &__value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 32px; font-weight: 800; letter-spacing: -0.04em; color: #f1f5f9;
+    line-height: 1; margin-bottom: 6px;
+
+    &--sm  { font-size: 18px; }
+    &--lg  { font-size: 22px; }
+  }
+
+  &__desc { font-size: 11.5px; color: #475569; }
+
+  &__status-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+
+  &__header-row { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+
+  &__indicator {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; border-radius: 0 0 16px 16px; opacity: 0.5;
+  }
+
+  &--hero { grid-column: span 1; }
+
+  &--wide { grid-column: span 2; }
+
+  &--cyan   { border-color: rgba(6,182,212,0.15);  background: linear-gradient(145deg, rgba(6,182,212,0.07), rgba(11,16,32,0.9)); }
+  &--violet { border-color: rgba(124,58,237,0.15); background: linear-gradient(145deg, rgba(124,58,237,0.07), rgba(11,16,32,0.9)); }
+  &--teal   { border-color: rgba(13,148,136,0.15); background: linear-gradient(145deg, rgba(13,148,136,0.07), rgba(11,16,32,0.9)); }
+}
+
+// ── Status dot ────────────────────────────────────────────────────────────────
+.am-status-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  animation: amPulse 2s ease-in-out infinite;
+}
+
+// ── Pct badge ─────────────────────────────────────────────────────────────────
+.am-pct-badge {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px; font-weight: 800;
+  border: 1px solid; padding: 4px 10px;
+  border-radius: 8px; background: rgba(0,0,0,0.2);
+}
+
+// ── Memory bar ────────────────────────────────────────────────────────────────
+.am-mem-track {
+  height: 7px; border-radius: 100px;
+  background: rgba(255,255,255,0.06); overflow: hidden; margin-bottom: 10px;
+}
+.am-mem-fill {
+  height: 100%; border-radius: 100px;
+  transition: width 1.2s cubic-bezier(0.22,1,0.36,1);
+}
+.am-mem-legend {
+  display: flex; gap: 16px;
+  font-size: 11px; color: #475569;
+}
+
+// ── Error ─────────────────────────────────────────────────────────────────────
+.am-error {
+  text-align: center; padding: 40px;
+  background: rgba(239,68,68,0.05);
+  border: 1px solid rgba(239,68,68,0.15);
+  border-radius: 16px;
+
+  span { font-size: 32px; display: block; margin-bottom: 10px; }
+  p { font-size: 13px; color: #94a3b8; margin-bottom: 16px; }
+}
+
+.am-retry-btn {
+  padding: 9px 20px;
+  background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 8px; color: #f87171;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  &:hover { background: rgba(239,68,68,0.18); }
+}
+
+// ── Skeleton grid ─────────────────────────────────────────────────────────────
+.am-skeleton-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+
+.am-skeleton {
+  height: 120px; border-radius: 16px;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.07) 50%,
+    rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+@keyframes amIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes amPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; }
+  50%       { opacity: 0.8; box-shadow: 0 0 0 4px transparent; }
+}
+
+@keyframes amSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

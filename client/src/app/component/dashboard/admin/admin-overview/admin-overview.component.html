@@ -1,0 +1,22 @@
+<div class="ao-grid" *ngIf="overview; else loadingTpl">
+  <div class="ao-card ao-card--{{card.color}}"
+       *ngFor="let card of cards; let i = index"
+       [style.animation-delay]="(i * 0.07) + 's'">
+    <div class="ao-card__top">
+      <div class="ao-card__icon">{{ card.icon }}</div>
+      <div class="ao-card__badge"></div>
+    </div>
+    <div class="ao-card__value">
+      {{ card.displayValue % 1 === 0 ? (card.displayValue | number:'1.0-0') : card.displayValue }}{{ card.suffix || '' }}
+    </div>
+    <div class="ao-card__label">{{ card.label }}</div>
+    <div class="ao-card__desc">{{ card.desc }}</div>
+    <div class="ao-card__glow"></div>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="ao-grid">
+    <div class="ao-skeleton" *ngFor="let i of [1,2,3,4,5,6,7,8,9]"></div>
+  </div>
+</ng-template>
